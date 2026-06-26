@@ -1,0 +1,834 @@
+<!DOCTYPE html>
+<html lang="sl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Starin Transport — Zanesljiv partner v transportu in logistiki</title>
+<meta name="description" content="Starin Transport — vrhunske prevozne in logistične storitve že od leta 1985. Sodoben vozni park EURO 6, skladiščenje 4.000 m², transport po Evropi in svetu." />
+<link rel="icon" type="image/png" href="assets/img/favicon.png" />
+<link rel="apple-touch-icon" href="assets/img/favicon.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Saira+Condensed:wght@600;700;800&display=swap" rel="stylesheet" />
+<style>
+:root{
+  --red:#C8102E;
+  --red-dark:#9c0c23;
+  --black:#0a0a0a;
+  --grey:#595959;
+  --grey-light:#8a8a8a;
+  --white:#ffffff;
+  --bg-soft:#f4f5f7;
+  --line:rgba(0,0,0,.08);
+  --shadow:0 18px 50px -20px rgba(0,0,0,.35);
+  --maxw:1180px;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  font-family:'Inter',system-ui,-apple-system,sans-serif;
+  color:var(--black);
+  background:var(--white);
+  line-height:1.65;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+h1,h2,h3,.display{font-family:'Saira Condensed','Inter',sans-serif;line-height:1.05;letter-spacing:.5px}
+a{color:inherit;text-decoration:none}
+img{max-width:100%;display:block}
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 24px}
+.eyebrow{
+  display:inline-block;font-size:13px;font-weight:700;letter-spacing:2.5px;
+  text-transform:uppercase;color:var(--red);margin-bottom:14px;
+}
+.section{padding:110px 0;position:relative;z-index:1}
+.section h2{font-size:clamp(34px,5vw,58px);font-weight:800;text-transform:uppercase}
+.lead{font-size:18px;color:var(--grey);max-width:680px;margin-top:18px}
+
+/* ---------- HEADER ---------- */
+header{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  transition:background .35s ease, box-shadow .35s ease, padding .35s ease;
+  padding:18px 0;
+}
+header.scrolled{background:rgba(255,255,255,.92);backdrop-filter:blur(12px);box-shadow:0 6px 24px -14px rgba(0,0,0,.3);padding:10px 0}
+.nav{display:flex;align-items:center;justify-content:space-between;gap:24px}
+.brand{display:flex;align-items:center;gap:12px}
+.brand img{height:46px;width:auto;background:#fff;border-radius:8px;padding:5px 8px;box-shadow:0 4px 14px -6px rgba(0,0,0,.25)}
+.menu{display:flex;align-items:center;gap:30px}
+.menu a{
+  font-size:14px;font-weight:600;letter-spacing:.4px;color:var(--black);
+  position:relative;padding:4px 0;transition:color .2s;
+}
+header:not(.scrolled) .menu a{color:#fff;text-shadow:0 1px 6px rgba(0,0,0,.4)}
+.menu a::after{content:"";position:absolute;left:0;bottom:-2px;height:2px;width:0;background:var(--red);transition:width .25s}
+.menu a:hover::after{width:100%}
+.menu a:hover{color:var(--red)}
+
+.lang{display:flex;align-items:center;border:1.5px solid var(--red);border-radius:30px;overflow:hidden;font-family:'Saira Condensed',sans-serif}
+.lang button{
+  background:transparent;border:0;cursor:pointer;font-weight:700;font-size:14px;
+  letter-spacing:1px;padding:7px 14px;color:var(--red);transition:.2s;
+}
+header:not(.scrolled) .lang{border-color:#fff;background:rgba(0,0,0,.25)}
+header:not(.scrolled) .lang button{color:#fff}
+.lang button.active{background:var(--red);color:#fff!important}
+
+.burger{display:none;flex-direction:column;gap:5px;background:none;border:0;cursor:pointer;padding:6px}
+.burger span{width:26px;height:2.5px;background:var(--black);border-radius:2px;transition:.3s}
+header:not(.scrolled) .burger span{background:#fff}
+
+/* ---------- HERO (scroll-driven video) ---------- */
+/* animation is contained in the hero — sticky pin scrubs frames as you scroll */
+.hero{position:relative;height:200vh;background:var(--black)}
+.hero-stage{
+  position:sticky;top:0;height:100vh;overflow:hidden;
+  display:flex;align-items:center;justify-content:center;
+}
+.hero-media{position:absolute;inset:0;z-index:0;background:#0a0a0a}
+.hero-poster{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0}
+#heroCanvas{position:absolute;inset:0;width:100%;height:100%;display:block;z-index:1}
+.hero-media::after{content:"";position:absolute;inset:0;background:
+  linear-gradient(180deg,rgba(10,10,10,.45) 0%,rgba(10,10,10,.1) 35%,rgba(10,10,10,.6) 100%);z-index:2}
+/* fade-to-black overlay — JS ramps it up at the end so the awkward last frames
+   are never seen and the hero blends seamlessly into the dark next section */
+.hero-fade{position:absolute;inset:0;z-index:3;background:var(--black);opacity:0;pointer-events:none}
+.hero-content{position:relative;z-index:5;text-align:center;color:#fff;padding:0 24px;max-width:1000px;will-change:opacity,transform}
+.hero-content .eyebrow{color:#fff;opacity:.85}
+.hero-content h1{
+  font-size:clamp(44px,8vw,108px);font-weight:800;text-transform:uppercase;
+  text-shadow:0 6px 30px rgba(0,0,0,.5);
+}
+.hero-content h1 .accent{color:var(--red)}
+.hero-content p{font-size:clamp(16px,2vw,21px);margin:22px auto 0;max-width:620px;opacity:.92}
+.hero-cta{margin-top:38px;display:flex;gap:16px;justify-content:center;flex-wrap:wrap}
+.btn{
+  display:inline-flex;align-items:center;gap:10px;font-weight:700;font-size:15px;letter-spacing:.5px;
+  padding:15px 30px;border-radius:40px;cursor:pointer;border:2px solid transparent;transition:.25s;
+}
+.btn-primary{background:var(--red);color:#fff}
+.btn-primary:hover{background:var(--red-dark);transform:translateY(-2px)}
+.btn-ghost{border-color:rgba(255,255,255,.6);color:#fff}
+.btn-ghost:hover{background:#fff;color:var(--black);border-color:#fff}
+
+/* ---------- STATS ---------- */
+.stats{background:var(--black);color:#fff;padding:64px 0;position:relative;z-index:1}
+.stats .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:30px;text-align:center}
+.stat .num{font-family:'Saira Condensed';font-size:clamp(40px,5vw,62px);font-weight:800;color:#fff;line-height:1}
+.stat .num span{color:var(--red)}
+.stat .lbl{font-size:14px;letter-spacing:1px;text-transform:uppercase;color:var(--grey-light);margin-top:8px}
+
+/* ---------- ABOUT ---------- */
+.about{display:grid;grid-template-columns:1.05fr .95fr;gap:64px;align-items:center}
+.about-img{position:relative;border-radius:18px;overflow:hidden;box-shadow:var(--shadow)}
+.about-img img{width:100%;height:100%;object-fit:cover;aspect-ratio:4/3}
+.about-img .badge{
+  position:absolute;left:22px;bottom:22px;background:var(--red);color:#fff;
+  padding:16px 22px;border-radius:12px;font-family:'Saira Condensed';
+}
+.about-img .badge b{display:block;font-size:30px;font-weight:800;line-height:1}
+.about-img .badge small{font-size:12px;letter-spacing:1.5px;text-transform:uppercase}
+
+/* ---------- SERVICES ---------- */
+.services{background:var(--bg-soft)}
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:26px;margin-top:54px}
+.card{
+  background:#fff;border:1px solid var(--line);border-radius:18px;padding:38px 32px;
+  transition:.3s;position:relative;overflow:hidden;
+}
+.card::before{content:"";position:absolute;top:0;left:0;width:100%;height:4px;background:var(--red);transform:scaleX(0);transform-origin:left;transition:.3s}
+.card:hover{transform:translateY(-6px);box-shadow:var(--shadow)}
+.card:hover::before{transform:scaleX(1)}
+.card .ico{width:58px;height:58px;border-radius:14px;background:rgba(200,16,46,.1);display:grid;place-items:center;margin-bottom:22px;color:var(--red)}
+.card .ico svg{width:30px;height:30px}
+.card h3{font-size:24px;font-weight:700;text-transform:uppercase;margin-bottom:12px}
+.card p{color:var(--grey);font-size:15.5px}
+
+/* ---------- GENERAL SERVICES (red, AI icons) ---------- */
+.gservices{background:var(--red);color:#0a0a0a;position:relative;overflow:hidden}
+.gservices::before{content:"";position:absolute;top:50%;left:-4%;transform:translateY(-50%);
+  width:760px;height:90%;background:url(assets/img/fleet-kombi.webp) left center/contain no-repeat;
+  opacity:.06;mix-blend-mode:multiply;pointer-events:none}
+.gservices .wrap{position:relative;z-index:1}
+.gservices .eyebrow{display:block;text-align:center;color:#0a0a0a;opacity:.65}
+.gservices h2{color:#0a0a0a;text-align:center}
+.gs-divider{width:64px;height:3px;background:#0a0a0a;opacity:.55;margin:20px auto 0;border-radius:3px}
+.gs-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:46px 24px;max-width:880px;margin:58px auto 0}
+.gs-item{display:flex;flex-direction:column;align-items:center;text-align:center;gap:18px}
+.gs-item img{width:86px;height:86px;object-fit:contain;transition:transform .3s ease}
+.gs-item:hover img{transform:translateY(-7px) scale(1.05)}
+.gs-item span{font-family:'Saira Condensed';font-weight:700;font-size:20px;text-transform:uppercase;letter-spacing:.5px;color:#0a0a0a;line-height:1.15}
+
+/* ---------- INDUSTRIES ---------- */
+.ind-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:18px;margin-top:50px}
+.ind{
+  background:#fff;border:1px solid var(--line);border-radius:14px;padding:28px 14px;text-align:center;
+  transition:.25s;
+}
+.ind:hover{background:var(--black);color:#fff;border-color:var(--black);transform:translateY(-4px)}
+.ind:hover .ind-ico{color:var(--red)}
+.ind-ico{color:var(--red);margin-bottom:12px;display:grid;place-items:center}
+.ind-ico svg{width:34px;height:34px}
+.ind span{font-size:13.5px;font-weight:600;letter-spacing:.3px}
+
+/* ---------- FLEET ---------- */
+.fleet{background:var(--black);color:#fff}
+.fleet h2{color:#fff}
+.fleet .lead{color:var(--grey-light)}
+.fleet-head{display:flex;justify-content:space-between;align-items:flex-end;gap:30px;flex-wrap:wrap}
+.euro-badge{display:inline-flex;align-items:center;gap:10px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14);padding:12px 20px;border-radius:40px;font-weight:700;font-family:'Saira Condensed';letter-spacing:1px}
+.euro-badge b{color:var(--red);font-size:20px}
+.fleet-grid{margin-top:54px;display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+.fcard{background:#fff;border-radius:18px;overflow:hidden;display:flex;flex-direction:column;transition:transform .3s,box-shadow .3s}
+.fcard:hover{transform:translateY(-6px);box-shadow:0 32px 60px -28px rgba(0,0,0,.7)}
+.fcard-img{position:relative;background:linear-gradient(180deg,#f6f7f9,#e9eaee);aspect-ratio:16/9;overflow:hidden}
+.fcard-img img{width:100%;height:100%;object-fit:cover;transition:transform .5s}
+.fcard:hover .fcard-img img{transform:scale(1.05)}
+.fcard-img img.flip{transform:scaleX(-1)}
+.fcard:hover .fcard-img img.flip{transform:scaleX(-1) scale(1.05)}
+.fcard-num{position:absolute;top:14px;left:14px;font-family:'Saira Condensed';font-weight:800;font-size:13px;letter-spacing:1px;background:var(--red);color:#fff;padding:5px 13px;border-radius:30px}
+.fcard-body{padding:22px}
+.fcard-body h3{font-family:'Saira Condensed';font-size:23px;font-weight:700;color:var(--black);text-transform:uppercase;letter-spacing:.5px;margin-bottom:16px;min-height:52px;line-height:1.05}
+.fdim{background:var(--bg-soft);border-radius:11px;padding:10px 14px;margin-bottom:12px}
+.fdim b{display:block;font-size:10.5px;letter-spacing:1px;text-transform:uppercase;color:var(--grey);margin-bottom:3px;font-weight:600}
+.fdim span{display:flex;align-items:center;min-height:38px;font-family:'Saira Condensed';font-size:16px;font-weight:700;color:var(--black);line-height:1.15}
+.fspecs{display:flex;gap:12px}
+.fspec{flex:1;background:var(--bg-soft);border-radius:11px;padding:11px 14px;text-align:center}
+.fspec b{display:block;font-size:10.5px;letter-spacing:1px;text-transform:uppercase;color:var(--grey);margin-bottom:4px;font-weight:600}
+.fspec span{font-family:'Saira Condensed';font-size:19px;font-weight:700;color:var(--black)}
+
+/* ---------- VALUES ---------- */
+.values{background:linear-gradient(180deg,#fff 0%,var(--bg-soft) 100%)}
+.vcards{display:grid;grid-template-columns:repeat(3,1fr);gap:26px;margin-top:54px}
+.vcard{background:#fff;border:1px solid var(--line);border-radius:18px;padding:36px 30px;border-top:4px solid var(--red)}
+.vcard .ico{color:var(--red);margin-bottom:18px}
+.vcard .ico svg{width:36px;height:36px}
+.vcard h3{font-size:22px;text-transform:uppercase;margin-bottom:12px;font-weight:700}
+.vcard p{color:var(--grey);font-size:15.5px}
+
+/* ---------- CONTACT ---------- */
+.contact{background:var(--black);color:#fff}
+.contact h2{color:#fff}
+.contact-grid{display:grid;grid-template-columns:.9fr 1.1fr;gap:60px;margin-top:54px}
+.cinfo-card{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);border-radius:18px;padding:34px}
+.cinfo-card h3{color:var(--red);font-size:15px;letter-spacing:2px;text-transform:uppercase;margin-bottom:20px}
+.cinfo-line{display:flex;gap:14px;align-items:flex-start;padding:12px 0;border-bottom:1px solid rgba(255,255,255,.08)}
+.cinfo-line:last-child{border-bottom:0}
+.cinfo-line svg{width:20px;height:20px;color:var(--red);flex-shrink:0;margin-top:3px}
+.cinfo-line .ct{font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--grey-light)}
+.cinfo-line .cv{font-size:16px;font-weight:600}
+.cinfo-line a:hover{color:var(--red)}
+.team{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.tperson{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);border-radius:14px;padding:20px;transition:.25s}
+.tperson:hover{border-color:var(--red);background:rgba(200,16,46,.08)}
+.tperson .tn{font-family:'Saira Condensed';font-size:20px;font-weight:700}
+.tperson .tr{color:var(--red);font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;margin:2px 0 12px}
+.tperson .tc{font-size:13.5px;color:var(--grey-light);display:flex;flex-direction:column;gap:4px}
+.tperson .tc a:hover{color:#fff}
+
+/* contact form */
+.cform{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);border-radius:18px;padding:34px}
+.cform h3{color:var(--red);font-size:15px;letter-spacing:2px;text-transform:uppercase;margin-bottom:22px}
+.cform .frow{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.field{margin-bottom:16px}
+.field label{display:block;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--grey-light);margin-bottom:8px}
+.field input,.field textarea{width:100%;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14);border-radius:10px;padding:13px 15px;color:#fff;font-family:inherit;font-size:15px;transition:border-color .2s,background .2s}
+.field input:focus,.field textarea:focus{outline:none;border-color:var(--red);background:rgba(255,255,255,.09)}
+.field textarea{resize:vertical;min-height:118px}
+.cform button{width:100%;justify-content:center;margin-top:4px}
+.form-note{font-size:12.5px;color:var(--grey-light);margin-top:14px;text-align:center}
+.form-note.ok{color:#46c46a}
+
+/* team + map blocks */
+.team-block{margin-top:48px}
+.map-block{margin-top:48px}
+.block-h3{color:var(--red);font-size:15px;letter-spacing:2px;text-transform:uppercase;margin-bottom:22px}
+.map-wrap{border-radius:18px;overflow:hidden;border:1px solid rgba(255,255,255,.12)}
+.map-wrap iframe{width:100%;height:430px;border:0;display:block}
+.map-link{display:inline-flex;align-items:center;gap:9px;margin-top:18px;font-weight:700;font-size:14px;letter-spacing:.4px;color:#fff}
+.map-link svg{width:18px;height:18px;color:var(--red)}
+.map-link:hover{color:var(--red)}
+
+/* ---------- FOOTER ---------- */
+footer{background:#050505;color:var(--grey-light);padding:50px 0 30px;border-top:1px solid rgba(255,255,255,.08);position:relative;z-index:1}
+.foot{display:flex;justify-content:space-between;align-items:center;gap:24px;flex-wrap:wrap}
+.foot img{height:42px;background:#fff;border-radius:8px;padding:5px 8px}
+.foot-links{display:flex;gap:26px;flex-wrap:wrap}
+.foot-links a{font-size:14px}
+.foot-links a:hover{color:#fff}
+.foot-copy{margin-top:26px;padding-top:22px;border-top:1px solid rgba(255,255,255,.08);font-size:13px;text-align:center}
+
+/* reveal */
+.reveal{opacity:0;transform:translateY(34px);transition:opacity .7s ease,transform .7s ease}
+.reveal.in{opacity:1;transform:none}
+
+/* ---------- RESPONSIVE ---------- */
+@media(max-width:900px){
+  .menu{
+    position:fixed;inset:0 0 0 auto;width:78%;max-width:340px;background:var(--white);
+    flex-direction:column;align-items:flex-start;justify-content:center;gap:28px;padding:40px;
+    transform:translateX(100%);transition:transform .35s ease;box-shadow:-20px 0 60px -20px rgba(0,0,0,.4);
+  }
+  .menu.open{transform:none}
+  .menu a,header:not(.scrolled) .menu a{color:var(--black);font-size:20px;text-shadow:none}
+  .burger{display:flex}
+  .about{grid-template-columns:1fr;gap:36px}
+  .cards,.vcards{grid-template-columns:1fr}
+  .ind-grid{grid-template-columns:repeat(3,1fr)}
+  .gs-grid{gap:40px 20px}
+  .stats .grid{grid-template-columns:repeat(2,1fr);gap:34px}
+  .contact-grid{grid-template-columns:1fr;gap:34px}
+  .team{grid-template-columns:repeat(2,1fr)}
+  .fleet-grid{grid-template-columns:repeat(2,1fr)}
+  .section{padding:80px 0}
+}
+@media(max-width:560px){
+  .ind-grid{grid-template-columns:repeat(2,1fr)}
+  .gs-grid{grid-template-columns:repeat(2,1fr);gap:36px 16px}
+  .team{grid-template-columns:1fr}
+  .cform .frow{grid-template-columns:1fr}
+  .fleet-grid{grid-template-columns:1fr}
+  .hero{height:240vh}
+}
+[hidden]{display:none!important}
+</style>
+</head>
+<body>
+
+<!-- ================= HEADER ================= -->
+<header id="header">
+  <div class="wrap nav">
+    <a href="#hero" class="brand"><img src="assets/img/logo.jpg" alt="Starin Transport" /></a>
+    <nav class="menu" id="menu">
+      <a href="#services" data-sl="Transport" data-en="Transport">Transport</a>
+      <a href="#services" data-sl="Logistika" data-en="Logistics">Logistika</a>
+      <a href="#fleet" data-sl="Skladiščenje" data-en="Warehousing">Skladiščenje</a>
+      <a href="#services" data-sl="Storitve" data-en="Services">Storitve</a>
+      <a href="#values" data-sl="Trajnost" data-en="Sustainability">Trajnost</a>
+      <a href="#contact" data-sl="Kontakt" data-en="Contact">Kontakt</a>
+    </nav>
+    <div style="display:flex;align-items:center;gap:14px">
+      <div class="lang" role="group" aria-label="Language">
+        <button data-lang="sl" class="active">SI</button>
+        <button data-lang="en">EN</button>
+      </div>
+      <button class="burger" id="burger" aria-label="Menu"><span></span><span></span><span></span></button>
+    </div>
+  </div>
+</header>
+
+<!-- ================= HERO (scroll-driven) ================= -->
+<section class="hero" id="hero">
+  <div class="hero-stage">
+    <div class="hero-media" id="heroMedia">
+      <img class="hero-poster" src="assets/frames/frame-001.webp" alt="Starin Transport tovornjak na avtocesti" fetchpriority="high" />
+      <canvas id="heroCanvas"></canvas>
+    </div>
+    <div class="hero-content" id="heroContent">
+      <span class="eyebrow" data-sl="Od leta 1985" data-en="Since 1985">Od leta 1985</span>
+      <h1 data-sl="Zanesljiv partner<br>v <span class='accent'>transportu</span> in logistiki" data-en="Reliable partner in<br><span class='accent'>transport</span> &amp; logistics">Zanesljiv partner<br>v <span class="accent">transportu</span> in logistiki</h1>
+      <p data-sl="Vrhunske prevozne storitve že od leta 1985. Sodoben vozni park, tehnologija sledenja in zanesljivost na vsakem koraku." data-en="Top-quality transport services since 1985. A modern fleet, tracking technology and reliability every step of the way.">Vrhunske prevozne storitve že od leta 1985. Sodoben vozni park, tehnologija sledenja in zanesljivost na vsakem koraku.</p>
+      <div class="hero-cta">
+        <a href="#contact" class="btn btn-primary" data-sl="Povpraševanje" data-en="Get a quote">Povpraševanje</a>
+        <a href="#services" class="btn btn-ghost" data-sl="Naše storitve" data-en="Our services">Naše storitve</a>
+      </div>
+    </div>
+    <!-- fade-to-black at the end of the animation (JS-controlled) -->
+    <div class="hero-fade" id="heroFade"></div>
+  </div>
+</section>
+
+<!-- ================= STATS ================= -->
+<section class="stats">
+  <div class="wrap">
+    <div class="grid">
+      <div class="stat reveal"><div class="num"><span>40</span>+</div><div class="lbl" data-sl="Let izkušenj" data-en="Years of experience">Let izkušenj</div></div>
+      <div class="stat reveal"><div class="num"><span>30</span>+</div><div class="lbl" data-sl="Vozil v voznem parku" data-en="Vehicles in fleet">Vozil v voznem parku</div></div>
+      <div class="stat reveal"><div class="num"><span>4.000</span></div><div class="lbl" data-sl="m² skladišča" data-en="m² of warehousing">m² skladišča</div></div>
+      <div class="stat reveal"><div class="num"><span>100</span>%</div><div class="lbl" data-sl="EURO 6 vozni park" data-en="EURO 6 fleet">EURO 6 vozni park</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= ABOUT ================= -->
+<section class="section" id="about">
+  <div class="wrap about">
+    <div class="reveal">
+      <span class="eyebrow" data-sl="O podjetju" data-en="About us">O podjetju</span>
+      <h2 data-sl="Vrhunska kakovost na vsakem koraku" data-en="Top quality every step of the way">Vrhunska kakovost na vsakem koraku</h2>
+      <p class="lead" data-sl="Podjetje Starin Transport zagotavlja vrhunske prevozne storitve že od leta 1985. Zavezani smo k zanesljivosti, prilagodljivosti in učinkovitosti." data-en="Starin Transport has been providing top-quality transport services since 1985. We are committed to reliability, flexibility and efficiency.">Podjetje Starin Transport zagotavlja vrhunske prevozne storitve že od leta 1985. Zavezani smo k zanesljivosti, prilagodljivosti in učinkovitosti.</p>
+      <p class="lead" data-sl="Naš sodoben vozni park obsega več kot 30 različnih vozil, opremljenih s tehnologijo sledenja, kar omogoča natančen nadzor nad vašo pošiljko. Sodelujemo z zanesljivimi partnerji v Sloveniji, Evropi in po svetu — z nami dobite partnerja, ki zagotavlja vrhunsko kakovost in zanesljivost." data-en="Our modern fleet includes over 30 different vehicles equipped with tracking technology, allowing precise control over your shipment. We collaborate with trusted partners in Slovenia, Europe and around the world — with us, you get a partner that ensures top quality and reliability.">Naš sodoben vozni park obsega več kot 30 različnih vozil, opremljenih s tehnologijo sledenja, kar omogoča natančen nadzor nad vašo pošiljko. Sodelujemo z zanesljivimi partnerji v Sloveniji, Evropi in po svetu — z nami dobite partnerja, ki zagotavlja vrhunsko kakovost in zanesljivost.</p>
+    </div>
+    <div class="about-img reveal">
+      <img src="assets/img/about-starin.webp" alt="Starin Transport tovornjak z blagovno znamko" />
+      <div class="badge"><b>1985</b><small data-sl="Od leta" data-en="Established">Od leta</small></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= SERVICES ================= -->
+<section class="section services" id="services">
+  <div class="wrap">
+    <div class="reveal" style="max-width:680px">
+      <span class="eyebrow" data-sl="Storitve" data-en="Services">Storitve</span>
+      <h2 data-sl="Celovite rešitve za vaše blago" data-en="Complete solutions for your goods">Celovite rešitve za vaše blago</h2>
+    </div>
+    <div class="cards">
+      <div class="card reveal">
+        <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 3h15v13H1z"/><path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg></div>
+        <h3 data-sl="Transport" data-en="Transport">Transport</h3>
+        <p data-sl="Domači in mednarodni cestni prevoz, vključno z zbirnimi prevozi (LTL) in polnimi tovori (FTL) po celotni Evropi in širše. Zagotavljamo tudi multimodalne transportne rešitve za Evropo in svet." data-en="Domestic and international road transport, including LTL (Less Than Truckload) and FTL (Full Truckload) transport throughout Europe and beyond. We also provide multimodal transport solutions to Europe and worldwide.">Domači in mednarodni cestni prevoz, vključno z zbirnimi prevozi (LTL) in polnimi tovori (FTL) po celotni Evropi in širše. Zagotavljamo tudi multimodalne transportne rešitve za Evropo in svet.</p>
+      </div>
+      <div class="card reveal">
+        <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21V8l9-5 9 5v13"/><path d="M3 21h18"/><path d="M7 21v-7h10v7"/><path d="M7 14h10"/></svg></div>
+        <h3 data-sl="Skladiščenje" data-en="Warehousing">Skladiščenje</h3>
+        <p data-sl="Skladiščne zmogljivosti obsegajo več kot 4.000 m². Ponujamo celovite rešitve za notranje in zunanje skladiščenje, regalno skladiščenje ter storitve komisioniranja. Celotno skladišče je pod stalnim video nadzorom in zaščiteno z alarmnim sistemom." data-en="Our storage facilities cover more than 4,000 m². We offer comprehensive indoor and outdoor warehousing solutions, racking storage and order picking services. The entire warehouse is under constant video surveillance and protected by an alarm system.">Skladiščne zmogljivosti obsegajo več kot 4.000 m². Ponujamo celovite rešitve za notranje in zunanje skladiščenje, regalno skladiščenje ter storitve komisioniranja. Celotno skladišče je pod stalnim video nadzorom in zaščiteno z alarmnim sistemom.</p>
+      </div>
+      <div class="card reveal">
+        <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15 15 0 0 1 0 20 15 15 0 0 1 0-20z"/></svg></div>
+        <h3 data-sl="Logistika" data-en="Logistics">Logistika</h3>
+        <p data-sl="Nudimo celovite storitve, ki vključujejo načrtovanje, koordinacijo in izvedbo prevozov, skladiščenja ter distribucije blaga." data-en="We offer comprehensive services, including planning, coordination and execution of transportation, warehousing and distribution of goods.">Nudimo celovite storitve, ki vključujejo načrtovanje, koordinacijo in izvedbo prevozov, skladiščenja ter distribucije blaga.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= GENERAL SERVICES (AI icons) ================= -->
+<section class="section gservices" id="storitve">
+  <div class="wrap">
+    <div class="reveal" style="margin:0 auto">
+      <span class="eyebrow" data-sl="Celovita ponudba" data-en="Full service range">Celovita ponudba</span>
+      <h2 data-sl="Naše storitve" data-en="Our services">Naše storitve</h2>
+      <div class="gs-divider"></div>
+    </div>
+    <div class="gs-grid">
+      <div class="gs-item reveal"><img src="assets/img/icons/svc-prevoz.webp" alt="Prevoz" loading="lazy" /><span data-sl="Prevoz" data-en="Transport">Prevoz</span></div>
+      <div class="gs-item reveal"><img src="assets/img/icons/svc-logistika.webp" alt="Logistika" loading="lazy" /><span data-sl="Logistika" data-en="Logistics">Logistika</span></div>
+      <div class="gs-item reveal"><img src="assets/img/icons/svc-skladiscenje.webp" alt="Skladiščenje" loading="lazy" /><span data-sl="Skladiščenje" data-en="Warehousing">Skladiščenje</span></div>
+      <div class="gs-item reveal"><img src="assets/img/icons/svc-pretovarjanje.webp" alt="Pretovarjanje" loading="lazy" /><span data-sl="Pretovarjanje" data-en="Transloading">Pretovarjanje</span></div>
+      <div class="gs-item reveal"><img src="assets/img/icons/svc-docking.webp" alt="Docking" loading="lazy" /><span data-sl="Docking" data-en="Docking">Docking</span></div>
+      <div class="gs-item reveal"><img src="assets/img/icons/svc-konsolidacija.webp" alt="Konsolidirne pošiljke" loading="lazy" /><span data-sl="Konsolidirne pošiljke" data-en="Consolidated shipments">Konsolidirne pošiljke</span></div>
+      <div class="gs-item reveal"><img src="assets/img/icons/svc-adr.webp" alt="ADR prevoz nevarnih materialov" loading="lazy" /><span data-sl="ADR prevoz nevarnih materialov" data-en="ADR transport of dangerous goods">ADR prevoz nevarnih materialov</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= INDUSTRIES ================= -->
+<section class="section" id="industries">
+  <div class="wrap">
+    <div class="reveal" style="max-width:680px">
+      <span class="eyebrow" data-sl="Panoge" data-en="Industries">Panoge</span>
+      <h2 data-sl="Panoge, ki jih pokrivamo" data-en="Industries we serve">Panoge, ki jih pokrivamo</h2>
+      <p class="lead" data-sl="Specializirani smo za prevoze in logistiko v različnih sektorjih." data-en="We specialize in transportation and logistics for various sectors.">Specializirani smo za prevoze in logistiko v različnih sektorjih.</p>
+    </div>
+    <div class="ind-grid">
+      <div class="ind reveal"><div class="ind-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l1.5-4.5A2 2 0 0 1 8.4 7h7.2a2 2 0 0 1 1.9 1.5L19 13"/><path d="M3 17v-2a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v2"/><path d="M5 17v2M19 17v2"/><circle cx="7.5" cy="15.5" r="1"/><circle cx="16.5" cy="15.5" r="1"/></svg></div><span data-sl="Avtomobilska" data-en="Automotive">Avtomobilska</span></div>
+      <div class="ind reveal"><div class="ind-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M9 9h6v6H9z"/><path d="M9 1v3M15 1v3M9 20v3M15 20v3M1 9h3M1 15h3M20 9h3M20 15h3"/></svg></div><span data-sl="Elektronika" data-en="Electronics">Elektronika</span></div>
+      <div class="ind reveal"><div class="ind-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 20h20"/><path d="M4 20V9l5-3v3l5-3v14"/><path d="M14 20V11l6-3v12"/></svg></div><span data-sl="Industrija" data-en="Industrial">Industrija</span></div>
+      <div class="ind reveal"><div class="ind-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><path d="M6 1v3M10 1v3M14 1v3"/></svg></div><span data-sl="Hrana in pijača" data-en="Food &amp; Beverages">Hrana in pijača</span></div>
+      <div class="ind reveal"><div class="ind-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.38 3.46L16 2a4 4 0 0 1-8 0L3.62 3.46a2 2 0 0 0-1.34 2.23l.58 3.47a1 1 0 0 0 .99.84H6v10a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V10h2.15a1 1 0 0 0 .99-.84l.58-3.47a2 2 0 0 0-1.34-2.23z"/></svg></div><span data-sl="Tekstil" data-en="Textile">Tekstil</span></div>
+      <div class="ind reveal"><div class="ind-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M2 12h20" transform="rotate(0 12 12)"/><rect x="9" y="2" width="6" height="20" rx="1"/><rect x="2" y="9" width="20" height="6" rx="1"/></svg></div><span data-sl="Medicina" data-en="Medicine">Medicina</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= FLEET ================= -->
+<section class="section fleet" id="fleet">
+  <div class="wrap">
+    <div class="fleet-head">
+      <div class="reveal" style="max-width:680px">
+        <span class="eyebrow" data-sl="Vozni park" data-en="Our fleet">Vozni park</span>
+        <h2 data-sl="Sodoben in zanesljiv vozni park" data-en="A modern, reliable fleet">Sodoben in zanesljiv vozni park</h2>
+        <p class="lead" data-sl="Naš vozni park ustreza standardu 100% EURO 6 ter je redno vzdrževan in obnavljan. Vozila so opremljena z najsodobnejšo vrhunsko tehnologijo." data-en="Our truck fleet is 100% EURO 6 and is regularly renewed and maintained. The vehicles are equipped with state-of-the-art premium technology.">Naš vozni park ustreza standardu 100% EURO 6 ter je redno vzdrževan in obnavljan. Vozila so opremljena z najsodobnejšo vrhunsko tehnologijo.</p>
+      </div>
+      <div class="euro-badge reveal"><b>EURO 6</b> <span data-sl="100% vozni park" data-en="100% fleet">100% vozni park</span></div>
+    </div>
+
+    <div class="fleet-grid">
+      <div class="fcard reveal">
+        <div class="fcard-img"><span class="fcard-num">01</span><img src="assets/img/fleet-kombi.webp" alt="Kombi (cerada)" loading="lazy" /></div>
+        <div class="fcard-body">
+          <h3 data-sl="Kombi (cerada)" data-en="Curtain-Sided Van">Kombi (cerada)</h3>
+          <div class="fdim"><b data-sl="Mere (D×Š×V)" data-en="Dimensions (L×W×H)">Mere (D×Š×V)</b><span>5,0 × 2,10 × 2,30 m</span></div>
+          <div class="fspecs">
+            <div class="fspec"><b data-sl="Nosilnost" data-en="Capacity">Nosilnost</b><span>1.000 kg</span></div>
+            <div class="fspec"><b data-sl="Euro palete" data-en="Euro-pallets">Euro palete</b><span data-sl="do 10" data-en="up to 10">do 10</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="fcard reveal">
+        <div class="fcard-img"><span class="fcard-num">02</span><img src="assets/img/fleet-jumbo.webp" alt="Jumbo tovornjak" loading="lazy" /></div>
+        <div class="fcard-body">
+          <h3 data-sl="Jumbo tovornjak" data-en="Jumbo Truck">Jumbo tovornjak</h3>
+          <div class="fdim"><b data-sl="Mere (D×Š×V)" data-en="Dimensions (L×W×H)">Mere (D×Š×V)</b><span>15,4 × 2,45 × 3 m</span></div>
+          <div class="fspecs">
+            <div class="fspec"><b data-sl="Nosilnost" data-en="Capacity">Nosilnost</b><span>24 t</span></div>
+            <div class="fspec"><b data-sl="Euro palete" data-en="Euro-pallets">Euro palete</b><span data-sl="do 38" data-en="up to 38">do 38</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="fcard reveal">
+        <div class="fcard-img"><span class="fcard-num">03</span><img src="assets/img/fleet-solo.webp" alt="Solo tovornjak" loading="lazy" /></div>
+        <div class="fcard-body">
+          <h3 data-sl="Solo tovornjak" data-en="Solo Truck">Solo tovornjak</h3>
+          <div class="fdim"><b data-sl="Mere (D×Š×V)" data-en="Dimensions (L×W×H)">Mere (D×Š×V)</b><span>7,2–8 × 2,40–2,45 × 2,50–3,00 m</span></div>
+          <div class="fspecs">
+            <div class="fspec"><b data-sl="Nosilnost" data-en="Capacity">Nosilnost</b><span>3,5 – 12 t</span></div>
+            <div class="fspec"><b data-sl="Euro palete" data-en="Euro-pallets">Euro palete</b><span data-sl="do 18" data-en="up to 18">do 18</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="fcard reveal">
+        <div class="fcard-img"><span class="fcard-num">04</span><img src="assets/img/fleet-semi.webp" alt="Polpriklopnik / šleper" loading="lazy" /></div>
+        <div class="fcard-body">
+          <h3 data-sl="Polpriklopnik / šleper" data-en="Semi-Trailer Truck">Polpriklopnik / šleper</h3>
+          <div class="fdim"><b data-sl="Mere (D×Š×V)" data-en="Dimensions (L×W×H)">Mere (D×Š×V)</b><span>13,6 × 2,45 × 2,7 m</span></div>
+          <div class="fspecs">
+            <div class="fspec"><b data-sl="Nosilnost" data-en="Capacity">Nosilnost</b><span>24 – 25 t</span></div>
+            <div class="fspec"><b data-sl="Euro palete" data-en="Euro-pallets">Euro palete</b><span data-sl="do 33–34" data-en="up to 33–34">do 33–34</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="fcard reveal">
+        <div class="fcard-img"><span class="fcard-num">05</span><img src="assets/img/fleet-semi.webp" alt="Mega tovornjak / šleper" loading="lazy" /></div>
+        <div class="fcard-body">
+          <h3 data-sl="Mega tovornjak / šleper" data-en="Mega Truck">Mega tovornjak / šleper</h3>
+          <div class="fdim"><b data-sl="Mere (D×Š×V)" data-en="Dimensions (L×W×H)">Mere (D×Š×V)</b><span>13,6 × 2,45 × 3 m</span></div>
+          <div class="fspecs">
+            <div class="fspec"><b data-sl="Nosilnost" data-en="Capacity">Nosilnost</b><span>24 – 25 t</span></div>
+            <div class="fspec"><b data-sl="Euro palete" data-en="Euro-pallets">Euro palete</b><span data-sl="do 33–34" data-en="up to 33–34">do 33–34</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="fcard reveal">
+        <div class="fcard-img"><span class="fcard-num">06</span><img src="assets/img/fleet-tandem.webp" alt="Tandem tovornjak" loading="lazy" /></div>
+        <div class="fcard-body">
+          <h3 data-sl="Tandem tovornjak" data-en="Tandem Truck">Tandem tovornjak</h3>
+          <div class="fdim"><b data-sl="Mere (D×Š×V)" data-en="Dimensions (L×W×H)">Mere (D×Š×V)</b><span>15,4 × 2,45 × 2,7 m</span></div>
+          <div class="fspecs">
+            <div class="fspec"><b data-sl="Nosilnost" data-en="Capacity">Nosilnost</b><span>12 – 24 t</span></div>
+            <div class="fspec"><b data-sl="Euro palete" data-en="Euro-pallets">Euro palete</b><span data-sl="do 38" data-en="up to 38">do 38</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= VALUES ================= -->
+<section class="section values" id="values">
+  <div class="wrap">
+    <div class="reveal" style="max-width:680px">
+      <span class="eyebrow" data-sl="Trajnost in vrednote" data-en="Sustainability &amp; values">Trajnost in vrednote</span>
+      <h2 data-sl="Odgovorni do okolja in družbe" data-en="Responsible to the environment and society">Odgovorni do okolja in družbe</h2>
+    </div>
+    <div class="vcards">
+      <div class="vcard reveal">
+        <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></div>
+        <h3 data-sl="Prilagodljivost in učinkovitost" data-en="Flexibility &amp; Efficiency">Prilagodljivost in učinkovitost</h3>
+        <p data-sl="Zagotavljamo storitve po meri ter učinkovite povezave v sistemu pretoka blaga po Evropi in svetu." data-en="We deliver customized services and provide effective connections to the system of movement across Europe and worldwide.">Zagotavljamo storitve po meri ter učinkovite povezave v sistemu pretoka blaga po Evropi in svetu.</p>
+      </div>
+      <div class="vcard reveal">
+        <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10z"/><path d="M2 21c0-3 1.85-5.36 5.08-6"/></svg></div>
+        <h3 data-sl="Trajnost" data-en="Sustainability">Trajnost</h3>
+        <p data-sl="Za zmanjšanje vpliva na okolje uporabljamo energetsko učinkovita prevozna sredstva in vozila z nizkimi emisijami." data-en="We use energy-efficient transportation means and low-emission vehicles to reduce our environmental footprint.">Za zmanjšanje vpliva na okolje uporabljamo energetsko učinkovita prevozna sredstva in vozila z nizkimi emisijami.</p>
+      </div>
+      <div class="vcard reveal">
+        <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+        <h3 data-sl="Družbena odgovornost" data-en="Social Responsibility">Družbena odgovornost</h3>
+        <p data-sl="Skrbimo za družbo, naše zaposlene in lokalno skupnost ter si prizadevamo za trajnostne rešitve, ki ne ogrožajo prihodnjih generacij." data-en="We care about society, our employees and the local community, striving for sustainable solutions that do not compromise future generations.">Skrbimo za družbo, naše zaposlene in lokalno skupnost ter si prizadevamo za trajnostne rešitve, ki ne ogrožajo prihodnjih generacij.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= CONTACT ================= -->
+<section class="section contact" id="contact">
+  <div class="wrap">
+    <div class="reveal" style="max-width:680px">
+      <span class="eyebrow" data-sl="Kontakt" data-en="Contact">Kontakt</span>
+      <h2 data-sl="Stopite v stik z nami" data-en="Get in touch">Stopite v stik z nami</h2>
+    </div>
+    <div class="contact-grid">
+      <div class="cinfo-card reveal">
+        <h3 data-sl="Podatki o podjetju" data-en="Company info">Podatki o podjetju</h3>
+        <div class="cinfo-line">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+          <div><div class="ct" data-sl="Podjetje" data-en="Company">Podjetje</div><div class="cv">TRANSPORT STARIN</div></div>
+        </div>
+        <div class="cinfo-line">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          <div><div class="ct" data-sl="Naslov" data-en="Address">Naslov</div><div class="cv" data-sl="Študljanska cesta 104, 1230 Domžale, Slovenija" data-en="Študljanska cesta 104, 1230 Domžale, Slovenia">Študljanska cesta 104, 1230 Domžale, Slovenija</div></div>
+        </div>
+        <div class="cinfo-line">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 7l10 6 10-6"/></svg>
+          <div><div class="ct" data-sl="Davčna št. (DDV)" data-en="Tax (VAT)">Davčna št. (DDV)</div><div class="cv">SI30618886</div></div>
+        </div>
+        <div class="cinfo-line">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13 1 .36 1.94.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.87.34 1.81.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+          <div><div class="ct" data-sl="Telefon" data-en="Phone">Telefon</div><div class="cv"><a href="tel:+38631345351">+386 31 345 351</a></div></div>
+        </div>
+        <div class="cinfo-line">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 7l10 6 10-6"/></svg>
+          <div><div class="ct" data-sl="E-pošta" data-en="Email">E-pošta</div><div class="cv"><a href="mailto:info@starin-transport.si">info@starin-transport.si</a></div></div>
+        </div>
+      </div>
+
+      <form class="cform reveal" id="contactForm" novalidate>
+        <h3 data-sl="Pošljite povpraševanje" data-en="Send an inquiry">Pošljite povpraševanje</h3>
+        <div class="frow">
+          <div class="field">
+            <label for="cf-name" data-sl="Ime in priimek" data-en="Full name">Ime in priimek</label>
+            <input id="cf-name" name="name" type="text" autocomplete="name" required />
+          </div>
+          <div class="field">
+            <label for="cf-email" data-sl="E-pošta" data-en="Email">E-pošta</label>
+            <input id="cf-email" name="email" type="email" autocomplete="email" required />
+          </div>
+        </div>
+        <div class="frow">
+          <div class="field">
+            <label for="cf-phone" data-sl="Telefon" data-en="Phone">Telefon</label>
+            <input id="cf-phone" name="phone" type="tel" autocomplete="tel" />
+          </div>
+          <div class="field">
+            <label for="cf-subject" data-sl="Zadeva" data-en="Subject">Zadeva</label>
+            <input id="cf-subject" name="subject" type="text" />
+          </div>
+        </div>
+        <div class="field">
+          <label for="cf-msg" data-sl="Sporočilo" data-en="Message">Sporočilo</label>
+          <textarea id="cf-msg" name="message" required></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary" data-sl="Pošlji sporočilo" data-en="Send message">Pošlji sporočilo</button>
+        <div class="form-note" id="formNote" data-sl="Odpre se vaš e-poštni program z že izpolnjenim sporočilom." data-en="Your email app opens with the message ready to send.">Odpre se vaš e-poštni program z že izpolnjenim sporočilom.</div>
+      </form>
+    </div>
+
+    <div class="team-block reveal">
+      <h3 class="block-h3" data-sl="Naša ekipa" data-en="Our team">Naša ekipa</h3>
+      <div class="team">
+          <div class="tperson">
+            <div class="tn">Simon Starin</div>
+            <div class="tr" data-sl="Direktor" data-en="Director">Direktor</div>
+            <div class="tc"><a href="mailto:simon@starin-transport.si">simon@starin-transport.si</a><a href="tel:+38631345351">+386 31 345 351</a></div>
+          </div>
+          <div class="tperson">
+            <div class="tn">Sabina Starin</div>
+            <div class="tr" data-sl="Računovodstvo in plačila" data-en="Invoice and payment">Računovodstvo in plačila</div>
+            <div class="tc"><a href="mailto:invoice@starin-transport.si">invoice@starin-transport.si</a><a href="tel:+38631345351">+386 31 345 351</a></div>
+          </div>
+          <div class="tperson">
+            <div class="tn">Miha Vrabič</div>
+            <div class="tr" data-sl="Vodja logistike" data-en="Head of logistics">Vodja logistike</div>
+            <div class="tc"><a href="mailto:miha@starin-transport.si">miha@starin-transport.si</a><a href="tel:+38631319499">+386 31 319 499</a></div>
+          </div>
+          <div class="tperson">
+            <div class="tn">Selvedin Duraković</div>
+            <div class="tr" data-sl="Uvoz-izvoz" data-en="Import-export">Uvoz-izvoz</div>
+            <div class="tc"><a href="mailto:selvedin@starin-transport.si">selvedin@starin-transport.si</a><a href="tel:+38651345494">+386 51 345 494</a></div>
+          </div>
+          <div class="tperson">
+            <div class="tn">Katarina Setnikar Žendar</div>
+            <div class="tr" data-sl="Obračuni in administracija" data-en="Billing &amp; Administration">Obračuni in administracija</div>
+            <div class="tc"><a href="mailto:katarina@starin-transport.si">katarina@starin-transport.si</a><a href="tel:+38631345351">+386 31 345 351</a></div>
+          </div>
+          <div class="tperson">
+            <div class="tn">Matija Kovačič Ivanjko</div>
+            <div class="tr" data-sl="Disponent" data-en="Disponent">Disponent</div>
+            <div class="tc"><a href="mailto:matija@starin-transport.si">matija@starin-transport.si</a><a href="tel:+38631792758">+386 31 792 758</a></div>
+          </div>
+        </div>
+      </div>
+
+    <div class="map-block reveal">
+      <h3 class="block-h3" data-sl="Kje nas najdete" data-en="Where to find us">Kje nas najdete</h3>
+      <div class="map-wrap">
+        <iframe src="https://maps.google.com/maps?q=46.1228416,14.6048605&amp;hl=sl&amp;z=15&amp;output=embed" loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="Transport Starin d.o.o. — lokacija"></iframe>
+      </div>
+      <a class="map-link" href="https://www.google.com/maps/place/Transport+Starin+d.o.o./@46.1228416,14.6022856,609m/data=!3m2!1e3!4b1!4m6!3m5!1s0x476535c6af951c47:0x4c69b3b09b15e57a!8m2!3d46.1228416!4d14.6048605!16s%2Fg%2F11q4hxt7pb?entry=ttu" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        <span data-sl="Odpri v Google Zemljevidih" data-en="Open in Google Maps">Odpri v Google Zemljevidih</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ================= FOOTER ================= -->
+<footer>
+  <div class="wrap">
+    <div class="foot">
+      <img src="assets/img/logo.jpg" alt="Starin Transport" />
+      <div class="foot-links">
+        <a href="#about" data-sl="O podjetju" data-en="About">O podjetju</a>
+        <a href="#services" data-sl="Storitve" data-en="Services">Storitve</a>
+        <a href="#fleet" data-sl="Vozni park" data-en="Fleet">Vozni park</a>
+        <a href="#values" data-sl="Trajnost" data-en="Sustainability">Trajnost</a>
+        <a href="#contact" data-sl="Kontakt" data-en="Contact">Kontakt</a>
+      </div>
+    </div>
+    <div class="foot-copy">
+      © <span id="year"></span> TRANSPORT STARIN — <span data-sl="Vse pravice pridržane." data-en="All rights reserved.">Vse pravice pridržane.</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+/* ---------- LANGUAGE TOGGLE ---------- */
+(function(){
+  const STORE='starin-lang';
+  const buttons=document.querySelectorAll('.lang button');
+  function apply(lang){
+    document.documentElement.lang=lang;
+    document.querySelectorAll('[data-'+lang+']').forEach(el=>{
+      el.innerHTML=el.getAttribute('data-'+lang);
+    });
+    buttons.forEach(b=>b.classList.toggle('active',b.dataset.lang===lang));
+    try{localStorage.setItem(STORE,lang)}catch(e){}
+  }
+  buttons.forEach(b=>b.addEventListener('click',()=>apply(b.dataset.lang)));
+  let saved='sl';
+  try{saved=localStorage.getItem(STORE)||'sl'}catch(e){}
+  apply(saved);
+})();
+
+/* ---------- HEADER SCROLL + MOBILE MENU ---------- */
+(function(){
+  const header=document.getElementById('header');
+  const burger=document.getElementById('burger');
+  const menu=document.getElementById('menu');
+  window.addEventListener('scroll',()=>{
+    header.classList.toggle('scrolled',window.scrollY>60);
+  },{passive:true});
+  burger.addEventListener('click',()=>menu.classList.toggle('open'));
+  menu.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>menu.classList.remove('open')));
+})();
+
+/* ---------- SCROLL-DRIVEN HERO — 300-frame sequence on canvas ---------- */
+(function(){
+  const FRAME_COUNT=300;
+  const hero=document.getElementById('hero');
+  const content=document.getElementById('heroContent');
+  const fade=document.getElementById('heroFade');
+  const canvas=document.getElementById('heroCanvas');
+  const ctx=canvas.getContext('2d',{alpha:false});
+
+  // the animation plays once across the hero's sticky pin zone (200vh hero → 100vh of scrub)
+  const pad=n=>('00'+n).slice(-3);
+  const frames=new Array(FRAME_COUNT);
+  const loaded=new Array(FRAME_COUNT).fill(false);
+  let dpr=1,currentIdx=-1,latestP=0;
+
+  function resize(){
+    dpr=Math.min(window.devicePixelRatio||1,2);
+    const w=Math.round(canvas.clientWidth*dpr), h=Math.round(canvas.clientHeight*dpr);
+    if(w===0||h===0) return;
+    if(w!==canvas.width||h!==canvas.height){ canvas.width=w; canvas.height=h; currentIdx=-1; }
+    draw(indexForProgress(latestP));
+  }
+
+  function paint(img){
+    if(!img||!img.naturalWidth) return;
+    const cw=canvas.width, ch=canvas.height;
+    const ir=img.naturalWidth/img.naturalHeight, cr=cw/ch;
+    let dw,dh,dx,dy;
+    if(ir>cr){ dh=ch; dw=ch*ir; dx=(cw-dw)/2; dy=0; }
+    else{ dw=cw; dh=cw/ir; dx=0; dy=(ch-dh)/2; }
+    ctx.drawImage(img,dx,dy,dw,dh);
+  }
+  function nearestLoaded(idx){
+    if(loaded[idx]) return idx;
+    for(let d=1;d<FRAME_COUNT;d++){
+      if(idx-d>=0&&loaded[idx-d]) return idx-d;
+      if(idx+d<FRAME_COUNT&&loaded[idx+d]) return idx+d;
+    }
+    return -1;
+  }
+  function draw(idx){
+    if(canvas.width===0||canvas.height===0) return;
+    const use=nearestLoaded(idx);
+    if(use<0||use===currentIdx) return;
+    currentIdx=use;
+    paint(frames[use]);
+  }
+  function indexForProgress(p){
+    return Math.max(0,Math.min(FRAME_COUNT-1,Math.round(p*(FRAME_COUNT-1))));
+  }
+
+  function load(i){
+    const img=new Image();
+    img.decoding='async';
+    img.onload=()=>{ loaded[i]=true; if(i===indexForProgress(latestP)) draw(i); };
+    img.src='assets/frames/frame-'+pad(i+1)+'.webp';
+    frames[i]=img;
+  }
+  for(let i=0;i<FRAME_COUNT;i++) load(i);
+
+  function clamp01(x){ return x<0?0:x>1?1:x; }
+  function render(){
+    // progress across the sticky pin zone — linear, constant rate (no speedup)
+    const rect=hero.getBoundingClientRect();
+    const total=hero.offsetHeight-window.innerHeight;
+    const p=total>0?clamp01(-rect.top/total):0;
+    latestP=p;
+
+    // frames 1→300 play at a constant rate over the whole pin
+    draw(indexForProgress(p));
+
+    // hero text: fully visible at start, fades out over p 0.10–0.45
+    const textOp=clamp01((0.45-p)/0.35);
+    content.style.opacity=textOp.toFixed(3);
+    content.style.transform='translateY('+(p*-60)+'px)';
+
+    // fade-to-black over the last stretch (p 0.78→1.0) so the awkward end frames
+    // are never seen and the hero blends seamlessly into the dark next section
+    const fadeOp=clamp01((p-0.78)/0.22);
+    fade.style.opacity=fadeOp.toFixed(3);
+  }
+
+  window.addEventListener('scroll',render,{passive:true});
+  window.addEventListener('resize',()=>{ resize(); render(); });
+  if(window.ResizeObserver){ new ResizeObserver(resize).observe(canvas); }
+  (function ensureFirstPaint(){
+    resize();
+    if(currentIdx<0) requestAnimationFrame(ensureFirstPaint);
+  })();
+  render();
+})();
+
+/* ---------- REVEAL ON SCROLL ---------- */
+(function(){
+  const io=new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}});
+  },{threshold:0.12});
+  document.querySelectorAll('.reveal').forEach((el,i)=>{
+    el.style.transitionDelay=(i%4*0.06)+'s';
+    io.observe(el);
+  });
+})();
+
+/* ---------- CONTACT FORM (mailto) ---------- */
+(function(){
+  const form=document.getElementById('contactForm');
+  if(!form) return;
+  const note=document.getElementById('formNote');
+  const TO='info@starin-transport.si';
+  form.addEventListener('submit',function(e){
+    e.preventDefault();
+    if(!form.checkValidity()){ form.reportValidity(); return; }
+    const lang=document.documentElement.lang==='en'?'en':'sl';
+    const val=id=>(document.getElementById(id).value||'').trim();
+    const name=val('cf-name'), email=val('cf-email'), phone=val('cf-phone'), subject=val('cf-subject'), msg=val('cf-msg');
+    const subj=subject||(lang==='en'?('Inquiry — '+name):('Povpraševanje — '+name));
+    const L=lang==='en'?{name:'Name',email:'Email',phone:'Phone',msg:'Message'}:{name:'Ime',email:'E-pošta',phone:'Telefon',msg:'Sporočilo'};
+    const body=[L.name+': '+name,L.email+': '+email,L.phone+': '+phone,'',L.msg+':',msg].join('\n');
+    window.location.href='mailto:'+TO+'?subject='+encodeURIComponent(subj)+'&body='+encodeURIComponent(body);
+    note.textContent=lang==='en'?'Opening your email app…':'Odpiramo vaš e-poštni program…';
+    note.classList.add('ok');
+  });
+})();
+
+document.getElementById('year').textContent=new Date().getFullYear();
+</script>
+</body>
+</html>
