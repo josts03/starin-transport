@@ -915,6 +915,7 @@ footer{background:#050505;color:var(--grey-light);padding:50px 0 30px;border-top
   for(let i=0;i<FRAME_COUNT;i++) load(i);
 
   function clamp01(x){ return x<0?0:x>1?1:x; }
+  function smooth(x){ x=clamp01(x); return x*x*(3-2*x); }   // smoothstep — gentle ease in/out
   function render(){
     // progress across the sticky pin zone — linear, constant rate (no speedup)
     const rect=hero.getBoundingClientRect();
@@ -922,27 +923,28 @@ footer{background:#050505;color:var(--grey-light);padding:50px 0 30px;border-top
     const p=total>0?clamp01(-rect.top/total):0;
     latestP=p;
 
-    // truck animation (frames 1→300) plays over the first ~72% of the pin,
-    // so the full sequence is seen before the black curtain covers it
-    draw(indexForProgress(clamp01(p/0.72)));
+    // STAGE 1 — truck animation plays over the first 54% of the pin, then holds
+    // the last frame. The full sequence is seen with no darkening mid-motion.
+    draw(indexForProgress(clamp01(p/0.54)));
 
-    // hero text: fully visible at start, fades out over p 0.10–0.45
-    const textOp=clamp01((0.45-p)/0.35);
+    // hero text: fully visible at start, eases out by p 0.42 (before the fade)
+    const textOp=smooth((0.42-p)/0.30);
     content.style.opacity=textOp.toFixed(3);
-    content.style.transform='translateY('+(p*-60)+'px)';
+    content.style.transform='translateY('+(p*-55)+'px)';
 
-    // fade-to-black over p 0.62→0.76 — the awkward end frames are never seen
-    const fadeOp=clamp01((p-0.62)/0.14);
+    // STAGE 2 — smooth eased fade to SOLID black over p 0.54→0.70, starting the
+    // instant the animation ends so the held frame dissolves cleanly into black
+    const fadeOp=smooth((p-0.54)/0.16);
     fade.style.opacity=fadeOp.toFixed(3);
 
-    // stats fade in ON the curtain (p 0.66→0.78) and stay full to the end —
-    // so the dark stretch shows the numbers instead of an empty screen
-    const statsOp=clamp01((p-0.66)/0.12);
+    // STAGE 3 — once the black is solid, the stats ease up cleanly on pure black
+    // (p 0.71→0.82) and stay full to the end — never on a half-faded frame
+    const statsOp=smooth((p-0.71)/0.11);
     stats.style.opacity=statsOp.toFixed(3);
-    statsGrid.style.transform='translateY('+((1-statsOp)*22).toFixed(1)+'px)';
+    statsGrid.style.transform='translateY('+((1-statsOp)*20).toFixed(1)+'px)';
 
-    // kick off the count-up once, as the stats start appearing
-    if(!countsDone && p>=0.66){ countsDone=true; animateCounts(); }
+    // kick off the count-up once, as the stats begin easing in on solid black
+    if(!countsDone && p>=0.71){ countsDone=true; animateCounts(); }
   }
 
   window.addEventListener('scroll',render,{passive:true});
