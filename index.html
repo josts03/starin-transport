@@ -118,6 +118,15 @@ header:not(.scrolled) .burger span{background:#fff}
 .stat .num span{color:var(--red)}
 .stat .lbl{font-size:14px;letter-spacing:1px;text-transform:uppercase;color:var(--grey-light);margin-top:8px}
 
+/* ---------- WHY US (feature strip) ---------- */
+.feat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:26px;margin-top:54px}
+.feat{padding:30px 24px;border:1px solid var(--line);border-radius:18px;background:#fff;border-top:4px solid var(--red);transition:transform .3s,box-shadow .3s}
+.feat:hover{transform:translateY(-6px);box-shadow:var(--shadow)}
+.feat .ico{width:50px;height:50px;border-radius:12px;background:rgba(200,16,46,.1);display:grid;place-items:center;color:var(--red);margin-bottom:18px}
+.feat .ico svg{width:26px;height:26px}
+.feat h3{font-size:20px;font-weight:700;text-transform:uppercase;margin-bottom:10px}
+.feat p{color:var(--grey);font-size:14.5px;line-height:1.6}
+
 /* ---------- ABOUT ---------- */
 .about{display:grid;grid-template-columns:1.05fr .95fr;gap:64px;align-items:center}
 .about-img{position:relative;border-radius:18px;overflow:hidden;box-shadow:var(--shadow)}
@@ -170,6 +179,27 @@ header:not(.scrolled) .burger span{background:#fff}
 .ind-ico{color:var(--red);margin-bottom:12px;display:grid;place-items:center}
 .ind-ico svg{width:34px;height:34px}
 .ind span{font-size:13.5px;font-weight:600;letter-spacing:.3px}
+
+/* flip cards (industries) — base = stacked (touch/phone shows both faces) */
+.flip-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin-top:50px}
+.flip-inner{display:flex;flex-direction:column;height:100%}
+.flip-face{padding:32px 26px;border:1px solid var(--line)}
+.flip-front{background:#fff;display:flex;flex-direction:column;align-items:center;text-align:center;gap:16px;border-radius:18px 18px 0 0;border-bottom:0}
+.flip-front .ico{width:62px;height:62px;border-radius:16px;background:rgba(200,16,46,.1);display:grid;place-items:center;color:var(--red)}
+.flip-front .ico svg{width:32px;height:32px}
+.flip-front h3{font-size:20px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;line-height:1.1}
+.flip-back{background:var(--red);color:#fff;border-color:var(--red);border-radius:0 0 18px 18px;display:flex;flex-direction:column;justify-content:center}
+.flip-back h3{font-size:18px;font-weight:700;text-transform:uppercase;margin-bottom:12px;color:#fff}
+.flip-back p{font-size:14px;line-height:1.6;color:rgba(255,255,255,.92)}
+/* desktop (hover + precise pointer) = 3D flip on hover */
+@media (hover:hover) and (pointer:fine){
+  .flip-card{perspective:1500px;min-height:320px}
+  .flip-inner{position:relative;min-height:320px;transition:transform .7s cubic-bezier(.4,.15,.2,1);transform-style:preserve-3d}
+  .flip-card:hover .flip-inner{transform:rotateY(180deg)}
+  .flip-face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border:1px solid var(--line);border-radius:18px;justify-content:center}
+  .flip-front{border-radius:18px}
+  .flip-back{transform:rotateY(180deg);border-color:var(--red);border-radius:18px;text-align:left}
+}
 
 /* ---------- FLEET ---------- */
 .fleet{background:var(--black);color:#fff}
@@ -276,6 +306,7 @@ footer{background:#050505;color:var(--grey-light);padding:50px 0 30px;border-top
   .cards,.vcards{grid-template-columns:1fr}
   .ind-grid{grid-template-columns:repeat(3,1fr)}
   .gs-grid{gap:40px 20px}
+  .flip-grid{grid-template-columns:repeat(2,1fr)}
   .stats .grid{grid-template-columns:repeat(2,1fr);gap:34px}
   .contact-grid{grid-template-columns:1fr;gap:34px}
   .team{grid-template-columns:repeat(2,1fr)}
@@ -285,6 +316,7 @@ footer{background:#050505;color:var(--grey-light);padding:50px 0 30px;border-top
 @media(max-width:560px){
   .ind-grid{grid-template-columns:repeat(2,1fr)}
   .gs-grid{grid-template-columns:repeat(2,1fr);gap:36px 16px}
+  .flip-grid{grid-template-columns:1fr}
   .team{grid-template-columns:1fr}
   .cform .frow{grid-template-columns:1fr}
   .fleet-grid{grid-template-columns:1fr}
@@ -302,7 +334,7 @@ footer{background:#050505;color:var(--grey-light);padding:50px 0 30px;border-top
     <nav class="menu" id="menu">
       <a href="#services" data-sl="Transport" data-en="Transport">Transport</a>
       <a href="#services" data-sl="Logistika" data-en="Logistics">Logistika</a>
-      <a href="#fleet" data-sl="Skladiščenje" data-en="Warehousing">Skladiščenje</a>
+      <a href="#skladiscenje" data-sl="Skladiščenje" data-en="Warehousing">Skladiščenje</a>
       <a href="#services" data-sl="Storitve" data-en="Services">Storitve</a>
       <a href="#values" data-sl="Trajnost" data-en="Sustainability">Trajnost</a>
       <a href="#contact" data-sl="Kontakt" data-en="Contact">Kontakt</a>
@@ -350,6 +382,38 @@ footer{background:#050505;color:var(--grey-light);padding:50px 0 30px;border-top
   </div>
 </section>
 
+<!-- ================= WHY US (feature strip) ================= -->
+<section class="section" id="zakaj">
+  <div class="wrap">
+    <div class="reveal" style="max-width:680px">
+      <span class="eyebrow" data-sl="Zakaj Starin" data-en="Why Starin">Zakaj Starin</span>
+      <h2 data-sl="Zanesljivost na vsakem koraku" data-en="Reliability every step of the way">Zanesljivost na vsakem koraku</h2>
+    </div>
+    <div class="feat-grid">
+      <div class="feat reveal">
+        <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h13l-3-3M16 12l-3 3"/><path d="M3 6h18M3 18h10"/></svg></div>
+        <h3 data-sl="Na cesti" data-en="On the road">Na cesti</h3>
+        <p data-sl="Najhitrejša in najvarnejša rešitev na cesti — zbirni, LTL in FTL prevoz po Evropi in širše." data-en="The fastest and safest solution on the road — groupage, LTL and FTL transport across Europe and beyond.">Najhitrejša in najvarnejša rešitev na cesti — zbirni, LTL in FTL prevoz po Evropi in širše.</p>
+      </div>
+      <div class="feat reveal">
+        <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4M12 18v4M4.9 4.9l2.8 2.8M16.3 16.3l2.8 2.8M2 12h4M18 12h4M4.9 19.1l2.8-2.8M16.3 7.7l2.8-2.8"/></svg></div>
+        <h3 data-sl="Prilagodljivost" data-en="Flexibility">Prilagodljivost</h3>
+        <p data-sl="Širok spekter prilagodljivih rešitev po meri, oblikovanih skupaj s strankami." data-en="A broad spectrum of flexible, custom solutions designed together with our clients.">Širok spekter prilagodljivih rešitev po meri, oblikovanih skupaj s strankami.</p>
+      </div>
+      <div class="feat reveal">
+        <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg></div>
+        <h3 data-sl="Učinkovitost" data-en="Efficiency">Učinkovitost</h3>
+        <p data-sl="Rešitve, usmerjene v prihodnost — učinkovite povezave v Sloveniji, Evropi in po svetu." data-en="Solutions oriented toward the future — efficient connections in Slovenia, Europe and worldwide.">Rešitve, usmerjene v prihodnost — učinkovite povezave v Sloveniji, Evropi in po svetu.</p>
+      </div>
+      <div class="feat reveal">
+        <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div>
+        <h3 data-sl="Čas je dragocen" data-en="Time Value">Čas je dragocen</h3>
+        <p data-sl="Točnost in učinkovitost sta ključ — vsak ukrep za doseganje rokov in pravočasno dostavo." data-en="Timeliness and efficiency are key — every measure taken to meet deadlines and deliver on time.">Točnost in učinkovitost sta ključ — vsak ukrep za doseganje rokov in pravočasno dostavo.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- ================= ABOUT ================= -->
 <section class="section" id="about">
   <div class="wrap about">
@@ -377,7 +441,7 @@ footer{background:#050505;color:var(--grey-light);padding:50px 0 30px;border-top
       <div class="card reveal">
         <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 3h15v13H1z"/><path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg></div>
         <h3 data-sl="Transport" data-en="Transport">Transport</h3>
-        <p data-sl="Domači in mednarodni cestni prevoz, vključno z zbirnimi prevozi (LTL) in polnimi tovori (FTL) po celotni Evropi in širše. Zagotavljamo tudi multimodalne transportne rešitve za Evropo in svet." data-en="Domestic and international road transport, including LTL (Less Than Truckload) and FTL (Full Truckload) transport throughout Europe and beyond. We also provide multimodal transport solutions to Europe and worldwide.">Domači in mednarodni cestni prevoz, vključno z zbirnimi prevozi (LTL) in polnimi tovori (FTL) po celotni Evropi in širše. Zagotavljamo tudi multimodalne transportne rešitve za Evropo in svet.</p>
+        <p data-sl="Domači in mednarodni cestni prevoz — zbirni (LTL) in polni tovori (FTL) po celotni Evropi in širše, ter multimodalne rešitve za ves svet. Vse poteka pod strogim nadzorom za varno dostavo in spoštovanje rokov, z našim sodobnim voznim parkom z nizkimi emisijami." data-en="Domestic and international road transport — LTL and FTL throughout Europe and beyond, plus multimodal solutions worldwide. Everything runs under strict oversight to ensure safe delivery and deadline compliance, with our modern low-emission fleet.">Domači in mednarodni cestni prevoz — zbirni (LTL) in polni tovori (FTL) po celotni Evropi in širše, ter multimodalne rešitve za ves svet. Vse poteka pod strogim nadzorom za varno dostavo in spoštovanje rokov, z našim sodobnim voznim parkom z nizkimi emisijami.</p>
       </div>
       <div class="card reveal">
         <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21V8l9-5 9 5v13"/><path d="M3 21h18"/><path d="M7 21v-7h10v7"/><path d="M7 14h10"/></svg></div>
@@ -387,7 +451,7 @@ footer{background:#050505;color:var(--grey-light);padding:50px 0 30px;border-top
       <div class="card reveal">
         <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15 15 0 0 1 0 20 15 15 0 0 1 0-20z"/></svg></div>
         <h3 data-sl="Logistika" data-en="Logistics">Logistika</h3>
-        <p data-sl="Nudimo celovite storitve, ki vključujejo načrtovanje, koordinacijo in izvedbo prevozov, skladiščenja ter distribucije blaga." data-en="We offer comprehensive services, including planning, coordination and execution of transportation, warehousing and distribution of goods.">Nudimo celovite storitve, ki vključujejo načrtovanje, koordinacijo in izvedbo prevozov, skladiščenja ter distribucije blaga.</p>
+        <p data-sl="Celovite storitve — načrtovanje, koordinacija in izvedba prevozov, skladiščenja ter distribucije blaga. Napreden sistem sledenja in analize v realnem času zagotavlja optimalno razporeditev virov in pravočasno dostavo, vi pa se osredotočite na svojo osnovno dejavnost." data-en="Comprehensive services — planning, coordination and execution of transport, warehousing and distribution. An advanced real-time tracking and analysis system ensures optimal resource allocation and on-time delivery, so you can focus on your core business.">Celovite storitve — načrtovanje, koordinacija in izvedba prevozov, skladiščenja ter distribucije blaga. Napreden sistem sledenja in analize v realnem času zagotavlja optimalno razporeditev virov in pravočasno dostavo, vi pa se osredotočite na svojo osnovno dejavnost.</p>
       </div>
     </div>
   </div>
@@ -421,13 +485,31 @@ footer{background:#050505;color:var(--grey-light);padding:50px 0 30px;border-top
       <h2 data-sl="Panoge, ki jih pokrivamo" data-en="Industries we serve">Panoge, ki jih pokrivamo</h2>
       <p class="lead" data-sl="Specializirani smo za prevoze in logistiko v različnih sektorjih." data-en="We specialize in transportation and logistics for various sectors.">Specializirani smo za prevoze in logistiko v različnih sektorjih.</p>
     </div>
-    <div class="ind-grid">
-      <div class="ind reveal"><div class="ind-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l1.5-4.5A2 2 0 0 1 8.4 7h7.2a2 2 0 0 1 1.9 1.5L19 13"/><path d="M3 17v-2a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v2"/><path d="M5 17v2M19 17v2"/><circle cx="7.5" cy="15.5" r="1"/><circle cx="16.5" cy="15.5" r="1"/></svg></div><span data-sl="Avtomobilska" data-en="Automotive">Avtomobilska</span></div>
-      <div class="ind reveal"><div class="ind-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M9 9h6v6H9z"/><path d="M9 1v3M15 1v3M9 20v3M15 20v3M1 9h3M1 15h3M20 9h3M20 15h3"/></svg></div><span data-sl="Elektronika" data-en="Electronics">Elektronika</span></div>
-      <div class="ind reveal"><div class="ind-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 20h20"/><path d="M4 20V9l5-3v3l5-3v14"/><path d="M14 20V11l6-3v12"/></svg></div><span data-sl="Industrija" data-en="Industrial">Industrija</span></div>
-      <div class="ind reveal"><div class="ind-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><path d="M6 1v3M10 1v3M14 1v3"/></svg></div><span data-sl="Hrana in pijača" data-en="Food &amp; Beverages">Hrana in pijača</span></div>
-      <div class="ind reveal"><div class="ind-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.38 3.46L16 2a4 4 0 0 1-8 0L3.62 3.46a2 2 0 0 0-1.34 2.23l.58 3.47a1 1 0 0 0 .99.84H6v10a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V10h2.15a1 1 0 0 0 .99-.84l.58-3.47a2 2 0 0 0-1.34-2.23z"/></svg></div><span data-sl="Tekstil" data-en="Textile">Tekstil</span></div>
-      <div class="ind reveal"><div class="ind-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M2 12h20" transform="rotate(0 12 12)"/><rect x="9" y="2" width="6" height="20" rx="1"/><rect x="2" y="9" width="20" height="6" rx="1"/></svg></div><span data-sl="Medicina" data-en="Medicine">Medicina</span></div>
+    <div class="flip-grid">
+      <div class="flip-card reveal"><div class="flip-inner">
+        <div class="flip-face flip-front"><div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l1.5-4.5A2 2 0 0 1 8.4 7h7.2a2 2 0 0 1 1.9 1.5L19 13"/><path d="M3 17v-2a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v2"/><path d="M5 17v2M19 17v2"/><circle cx="7.5" cy="15.5" r="1"/><circle cx="16.5" cy="15.5" r="1"/></svg></div><h3 data-sl="Avtomobilska industrija" data-en="Automotive">Avtomobilska industrija</h3></div>
+        <div class="flip-face flip-back"><h3 data-sl="Avtomobilska industrija" data-en="Automotive">Avtomobilska industrija</h3><p data-sl="Specializirani smo za prevoze v avtomobilski industriji, kjer zagotavljamo visoko natančnost in vrhunsko kakovost storitev. Naša ekipa ima bogate izkušnje z logistiko v tem sektorju, kar nam omogoča, da optimiziramo procese prevoza in dostave." data-en="We specialise in transport for the automotive industry, ensuring high precision and top-quality service. Our team has extensive logistics experience in this sector, allowing us to optimise transport and delivery processes.">Specializirani smo za prevoze v avtomobilski industriji, kjer zagotavljamo visoko natančnost in vrhunsko kakovost storitev. Naša ekipa ima bogate izkušnje z logistiko v tem sektorju, kar nam omogoča, da optimiziramo procese prevoza in dostave.</p></div>
+      </div></div>
+      <div class="flip-card reveal"><div class="flip-inner">
+        <div class="flip-face flip-front"><div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M9 9h6v6H9z"/><path d="M9 1v3M15 1v3M9 20v3M15 20v3M1 9h3M1 15h3M20 9h3M20 15h3"/></svg></div><h3 data-sl="Elektronika" data-en="Electronics">Elektronika</h3></div>
+        <div class="flip-face flip-back"><h3 data-sl="Elektronika" data-en="Electronics">Elektronika</h3><p data-sl="Naše izkušnje pri skrbnem ravnanju, shranjevanju in upravljanju visokotehnološkega blaga zagotavljajo, da v vseh naših logističnih operacijah upoštevamo visoko stopnjo varnosti." data-en="Our experience in careful handling, storage and management of high-tech goods ensures a high level of safety across all our logistics operations.">Naše izkušnje pri skrbnem ravnanju, shranjevanju in upravljanju visokotehnološkega blaga zagotavljajo, da v vseh naših logističnih operacijah upoštevamo visoko stopnjo varnosti.</p></div>
+      </div></div>
+      <div class="flip-card reveal"><div class="flip-inner">
+        <div class="flip-face flip-front"><div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 20h20"/><path d="M4 20V9l5-3v3l5-3v14"/><path d="M14 20V11l6-3v12"/></svg></div><h3 data-sl="Industrija" data-en="Industrial">Industrija</h3></div>
+        <div class="flip-face flip-back"><h3 data-sl="Industrija" data-en="Industrial">Industrija</h3><p data-sl="Naša flota in logistične rešitve zagotavljajo varne, natančne in prilagodljive prevoze, ki ustrezajo specifičnim potrebam industrijskega sektorja. Z zanesljivo dostavo in skrbnim ravnanjem poskrbimo, da vaši izdelki vedno pravočasno in varno prispejo na cilj." data-en="Our fleet and logistics solutions provide safe, precise and flexible transport tailored to the specific needs of the industrial sector. With reliable delivery and careful handling, we ensure your products always arrive on time and safely.">Naša flota in logistične rešitve zagotavljajo varne, natančne in prilagodljive prevoze, ki ustrezajo specifičnim potrebam industrijskega sektorja. Z zanesljivo dostavo in skrbnim ravnanjem poskrbimo, da vaši izdelki vedno pravočasno in varno prispejo na cilj.</p></div>
+      </div></div>
+      <div class="flip-card reveal"><div class="flip-inner">
+        <div class="flip-face flip-front"><div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><path d="M6 1v3M10 1v3M14 1v3"/></svg></div><h3 data-sl="Hrana in pijača" data-en="Food &amp; Beverages">Hrana in pijača</h3></div>
+        <div class="flip-face flip-back"><h3 data-sl="Hrana in pijača" data-en="Food &amp; Beverages">Hrana in pijača</h3><p data-sl="Pri prevozu živil in pijač je ključnega pomena skrb za rok trajanja in higieno. Z izkušnjami pri upravljanju sezonskih nihanj in specifičnih zahtev trga zagotavljamo, da so vaši izdelki vedno varno, sveže in pravočasno dostavljeni." data-en="When transporting food and beverages, attention to shelf life and hygiene is essential. With experience managing seasonal fluctuations and specific market demands, we ensure your products are always delivered safely, fresh and on time.">Pri prevozu živil in pijač je ključnega pomena skrb za rok trajanja in higieno. Z izkušnjami pri upravljanju sezonskih nihanj in specifičnih zahtev trga zagotavljamo, da so vaši izdelki vedno varno, sveže in pravočasno dostavljeni.</p></div>
+      </div></div>
+      <div class="flip-card reveal"><div class="flip-inner">
+        <div class="flip-face flip-front"><div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.38 3.46L16 2a4 4 0 0 1-8 0L3.62 3.46a2 2 0 0 0-1.34 2.23l.58 3.47a1 1 0 0 0 .99.84H6v10a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V10h2.15a1 1 0 0 0 .99-.84l.58-3.47a2 2 0 0 0-1.34-2.23z"/></svg></div><h3 data-sl="Tekstil" data-en="Textile">Tekstil</h3></div>
+        <div class="flip-face flip-back"><h3 data-sl="Tekstil" data-en="Textile">Tekstil</h3><p data-sl="Prevoz tekstila zahteva čiste in suhe pogoje ter skrbno ravnanje. Poskrbimo za ustrezno zaščito kolekcij in materialov ter zanesljivo in pravočasno dostavo." data-en="Textile transport requires clean, dry conditions and careful handling. We ensure proper protection of collections and materials, with reliable and on-time delivery.">Prevoz tekstila zahteva čiste in suhe pogoje ter skrbno ravnanje. Poskrbimo za ustrezno zaščito kolekcij in materialov ter zanesljivo in pravočasno dostavo.</p></div>
+      </div></div>
+      <div class="flip-card reveal"><div class="flip-inner">
+        <div class="flip-face flip-front"><div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M2 12h20" transform="rotate(0 12 12)"/><rect x="9" y="2" width="6" height="20" rx="1"/><rect x="2" y="9" width="20" height="6" rx="1"/></svg></div><h3 data-sl="Medicina" data-en="Medicine">Medicina</h3></div>
+        <div class="flip-face flip-back"><h3 data-sl="Medicina" data-en="Medicine">Medicina</h3><p data-sl="Pri prevozu medicinskih izdelkov sta ključna natančnost in doslednost. S skrbnim ravnanjem in nadzorom zagotavljamo varno ter pravočasno dostavo občutljivih pošiljk." data-en="Transporting medical goods demands precision and consistency. Through careful handling and oversight, we ensure safe and timely delivery of sensitive shipments.">Pri prevozu medicinskih izdelkov sta ključna natančnost in doslednost. S skrbnim ravnanjem in nadzorom zagotavljamo varno ter pravočasno dostavo občutljivih pošiljk.</p></div>
+      </div></div>
     </div>
   </div>
 </section>
@@ -510,6 +592,44 @@ footer{background:#050505;color:var(--grey-light);padding:50px 0 30px;border-top
             <div class="fspec"><b data-sl="Euro palete" data-en="Euro-pallets">Euro palete</b><span data-sl="do 38" data-en="up to 38">do 38</span></div>
           </div>
         </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= WAREHOUSING ================= -->
+<section class="section services" id="skladiscenje">
+  <div class="wrap">
+    <div class="reveal" style="max-width:680px">
+      <span class="eyebrow" data-sl="Skladiščenje" data-en="Warehousing">Skladiščenje</span>
+      <h2 data-sl="Varno in pregledno skladiščenje" data-en="Safe, organised warehousing">Varno in pregledno skladiščenje</h2>
+      <p class="lead" data-sl="Naše skladiščne zmogljivosti obsegajo več kot 4.000 m². Ponujamo celovite rešitve za notranje in zunanje skladiščenje, regalno skladiščenje ter komisioniranje." data-en="Our storage facilities cover more than 4,000 m². We offer comprehensive indoor and outdoor warehousing, racking storage and order picking.">Naše skladiščne zmogljivosti obsegajo več kot 4.000 m². Ponujamo celovite rešitve za notranje in zunanje skladiščenje, regalno skladiščenje ter komisioniranje.</p>
+    </div>
+    <div class="cards">
+      <div class="card reveal">
+        <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21V9l9-6 9 6v12"/><path d="M3 21h18"/><rect x="8" y="13" width="8" height="8"/><path d="M8 17h8"/></svg></div>
+        <h3 data-sl="Notranje skladiščenje" data-en="Indoor Warehousing">Notranje skladiščenje</h3>
+        <p data-sl="Učinkovite in varne rešitve za notranje skladiščenje. Organizacijo prostora prilagodimo vašim potrebam za optimalno izrabo in enostaven dostop do zalog — regalno za standardne euro palete in talno za nestandardne dimenzije." data-en="Efficient and safe indoor storage. We adapt the space layout to your needs for optimal use and easy access — racking for standard euro-pallets and floor storage for non-standard dimensions.">Učinkovite in varne rešitve za notranje skladiščenje. Organizacijo prostora prilagodimo vašim potrebam za optimalno izrabo in enostaven dostop do zalog — regalno za standardne euro palete in talno za nestandardne dimenzije.</p>
+      </div>
+      <div class="card reveal">
+        <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="7" r="3"/><path d="M12 1v1M12 12v1M5.6 5.6l.7.7M17.7 5.6l-.7.7"/><rect x="3" y="15" width="7" height="6"/><rect x="14" y="15" width="7" height="6"/></svg></div>
+        <h3 data-sl="Zunanje skladiščenje" data-en="Outdoor Warehousing">Zunanje skladiščenje</h3>
+        <p data-sl="Možnosti zunanjega skladiščenja, idealne za robustne materiale, odporne na vremenske vplive, z zagotovljeno varnostjo in zaščito blaga." data-en="Outdoor storage options, ideal for robust materials resistant to weather conditions, with guaranteed security and protection of goods.">Možnosti zunanjega skladiščenja, idealne za robustne materiale, odporne na vremenske vplive, z zagotovljeno varnostjo in zaščito blaga.</p>
+      </div>
+      <div class="card reveal">
+        <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="1"/><path d="M3 9h18M3 15h18M9 3v18M15 3v18"/></svg></div>
+        <h3 data-sl="Regalno skladiščenje" data-en="Racking Storage">Regalno skladiščenje</h3>
+        <p data-sl="Regalne rešitve omogočajo maksimalno izrabo prostora z različnimi tipi regalov za vse vrste blaga." data-en="Racking solutions enable maximum space utilization through various shelf types for all kinds of goods.">Regalne rešitve omogočajo maksimalno izrabo prostora z različnimi tipi regalov za vse vrste blaga.</p>
+      </div>
+      <div class="card reveal">
+        <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 2h6a1 1 0 0 1 1 1v2H8V3a1 1 0 0 1 1-1z"/><path d="M16 4h2a2 2 0 0 1 2 2v13a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="M9 12l2 2 4-4"/></svg></div>
+        <h3 data-sl="Komisioniranje" data-en="Order Picking">Komisioniranje</h3>
+        <p data-sl="Poleg skladiščenja nudimo storitve komisioniranja s celovito logistično podporo in distribucijo, kar optimizira vaše osnovne poslovne procese." data-en="Beyond storage, we offer order picking with complete logistics support and distribution, optimizing your core business operations.">Poleg skladiščenja nudimo storitve komisioniranja s celovito logistično podporo in distribucijo, kar optimizira vaše osnovne poslovne procese.</p>
+      </div>
+      <div class="card reveal">
+        <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l8 3v6c0 5-3.5 8.5-8 11-4.5-2.5-8-6-8-11V5l8-3z"/><path d="M9 12l2 2 4-4"/></svg></div>
+        <h3 data-sl="Varnost" data-en="Security">Varnost</h3>
+        <p data-sl="Celotno skladišče je pod stalnim video nadzorom in zaščiteno z alarmnim sistemom, kar zagotavlja visoko varnost in nadzor nad blagom." data-en="The entire warehouse is under constant video surveillance and protected by an alarm system, ensuring high security and control over goods.">Celotno skladišče je pod stalnim video nadzorom in zaščiteno z alarmnim sistemom, kar zagotavlja visoko varnost in nadzor nad blagom.</p>
       </div>
     </div>
   </div>
