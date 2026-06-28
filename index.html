@@ -316,6 +316,7 @@ footer{background:#050505;color:var(--grey-light);padding:50px 0 30px;border-top
   .flip-grid{grid-template-columns:repeat(2,1fr)}
   .stats .grid{grid-template-columns:repeat(2,1fr);gap:34px}
   .hero-stats-grid{grid-template-columns:repeat(2,1fr);gap:38px 20px}
+  .hero{height:160vh}
   .contact-grid{grid-template-columns:1fr;gap:34px}
   .team{grid-template-columns:repeat(2,1fr)}
   .fleet-grid{grid-template-columns:repeat(2,1fr)}
@@ -329,7 +330,6 @@ footer{background:#050505;color:var(--grey-light);padding:50px 0 30px;border-top
   .team{grid-template-columns:1fr}
   .cform .frow{grid-template-columns:1fr}
   .fleet-grid{grid-template-columns:1fr}
-  .hero{height:200vh}
 }
 [hidden]{display:none!important}
 </style>
@@ -830,21 +830,22 @@ footer{background:#050505;color:var(--grey-light);padding:50px 0 30px;border-top
   menu.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>menu.classList.remove('open')));
 })();
 
-/* ---------- SCROLL-DRIVEN HERO — 300-frame sequence on canvas ---------- */
+/* ---------- HERO — desktop: scroll-driven 300-frame sequence; mobile: static first frame + clean reveal ---------- */
 (function(){
-  const FRAME_COUNT=300;
+  const FRAME_COUNT=300, REVEAL_FRAME=250;     // the curtain + stats begin at this frame (desktop)
   const hero=document.getElementById('hero');
   const content=document.getElementById('heroContent');
   const fade=document.getElementById('heroFade');
   const stats=document.getElementById('heroStats');
   const statsGrid=stats.querySelector('.hero-stats-grid');
   const canvas=document.getElementById('heroCanvas');
-  const ctx=canvas.getContext('2d',{alpha:false});
 
-  // count-up animation for the hero stats — runs once when the curtain reveals them.
-  // Real values live in the HTML (SEO / no-JS); JS resets them to 0 and counts up.
+  /* ----- shared helpers + count-up (both desktop and mobile) -----
+     Real stat values live in the HTML (SEO / no-JS); JS resets to 0 and counts up. */
   const reduceMotion=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   let countsDone=false;
+  function clamp01(x){ return x<0?0:x>1?1:x; }
+  function smooth(x){ x=clamp01(x); return x*x*(3-2*x); }   // smoothstep — gentle ease in/out
   function fmtNum(n,thou){ n=Math.round(n); return thou?(''+n).replace(/\B(?=(\d{3})+(?!\d))/g,'.'):''+n; }
   if(!reduceMotion){ document.querySelectorAll('#heroStats .cnt').forEach(el=>{ el.textContent='0'; }); }
   function animateCounts(){
@@ -855,8 +856,8 @@ footer{background:#050505;color:var(--grey-light);padding:50px 0 30px;border-top
       const dur=1400, delay=i*120; let start=null;       // slight stagger per number
       function step(ts){
         if(start===null) start=ts;
-        const t=Math.min(1,Math.max(0,(ts-start-delay)/dur)), eased=1-Math.pow(1-t,3);
-        el.textContent=fmtNum(target*eased,thou);
+        const t=Math.min(1,Math.max(0,(ts-start-delay)/dur));
+        el.textContent=fmtNum(target*(1-Math.pow(1-t,3)),thou);
         if(t<1) requestAnimationFrame(step); else el.textContent=fmtNum(target,thou);
       }
       requestAnimationFrame(step);
@@ -864,8 +865,35 @@ footer{background:#050505;color:var(--grey-light);padding:50px 0 30px;border-top
     // safety net — if rAF is throttled (e.g. inactive tab), still land on final values
     if(!reduceMotion) setTimeout(()=>{ els.forEach(el=>{ el.textContent=fmtNum(+el.dataset.target,el.dataset.thousand==='1'); }); },2200);
   }
+  function heroProgress(){
+    const rect=hero.getBoundingClientRect(), total=hero.offsetHeight-window.innerHeight;
+    return total>0?clamp01(-rect.top/total):0;
+  }
 
-  // the animation plays once across the hero's sticky pin zone (180vh hero → 80vh of scrub)
+  /* ===== MOBILE (≤900px / touch): no heavy frame sequence — show ONLY the first
+     image, then a clean fade-to-black curtain and the counted-up stats ===== */
+  if(window.matchMedia('(max-width:900px)').matches){
+    canvas.style.display='none';                 // reveal the static frame-001 poster beneath
+    function renderM(){
+      const p=heroProgress();
+      content.style.opacity=smooth((0.42-p)/0.24).toFixed(3);   // headline eases out
+      content.style.transform='translateY('+(p*-40)+'px)';
+      fade.style.opacity=smooth((p-0.40)/0.18).toFixed(3);      // clean curtain to black
+      const statsOp=smooth((p-0.50)/0.24);                      // stats ease in on the black
+      stats.style.opacity=statsOp.toFixed(3);
+      statsGrid.style.transform='translateY('+((1-statsOp)*18).toFixed(1)+'px)';
+      if(!countsDone && p>=0.50){ countsDone=true; animateCounts(); }
+    }
+    window.addEventListener('scroll',renderM,{passive:true});
+    window.addEventListener('resize',renderM,{passive:true});
+    renderM();
+    return;
+  }
+
+  /* ===== DESKTOP: scroll-driven 300-frame sequence on canvas (180vh hero → 80vh of scrub) ===== */
+  const ctx=canvas.getContext('2d',{alpha:false});
+  const FRAMES_END=0.60;                                       // frames 1→300 play over p 0→0.60
+  const pReveal=FRAMES_END*(REVEAL_FRAME-1)/(FRAME_COUNT-1);   // p where frame 250 is reached (~0.50)
   const pad=n=>('00'+n).slice(-3);
   const frames=new Array(FRAME_COUNT);
   const loaded=new Array(FRAME_COUNT).fill(false);
@@ -878,7 +906,6 @@ footer{background:#050505;color:var(--grey-light);padding:50px 0 30px;border-top
     if(w!==canvas.width||h!==canvas.height){ canvas.width=w; canvas.height=h; currentIdx=-1; }
     draw(indexForProgress(latestP));
   }
-
   function paint(img){
     if(!img||!img.naturalWidth) return;
     const cw=canvas.width, ch=canvas.height;
@@ -906,7 +933,6 @@ footer{background:#050505;color:var(--grey-light);padding:50px 0 30px;border-top
   function indexForProgress(p){
     return Math.max(0,Math.min(FRAME_COUNT-1,Math.round(p*(FRAME_COUNT-1))));
   }
-
   function load(i){
     const img=new Image();
     img.decoding='async';
@@ -916,46 +942,28 @@ footer{background:#050505;color:var(--grey-light);padding:50px 0 30px;border-top
   }
   for(let i=0;i<FRAME_COUNT;i++) load(i);
 
-  function clamp01(x){ return x<0?0:x>1?1:x; }
-  function smooth(x){ x=clamp01(x); return x*x*(3-2*x); }   // smoothstep — gentle ease in/out
   function render(){
-    // progress across the sticky pin zone — linear, constant rate (no speedup)
-    const rect=hero.getBoundingClientRect();
-    const total=hero.offsetHeight-window.innerHeight;
-    const p=total>0?clamp01(-rect.top/total):0;
+    const p=heroProgress();
     latestP=p;
-
-    // STAGE 1 — truck animation plays over the first 54% of the pin, then holds
-    // the last frame. The full sequence is seen with no darkening mid-motion.
-    draw(indexForProgress(clamp01(p/0.54)));
-
-    // hero text: fully visible at start, eases out by p 0.42 (before the fade)
-    const textOp=smooth((0.42-p)/0.30);
-    content.style.opacity=textOp.toFixed(3);
+    // frames 1→300 play over p 0→FRAMES_END, then the last frame is held
+    draw(indexForProgress(clamp01(p/FRAMES_END)));
+    // hero headline eases out just before the reveal point (frame 250)
+    content.style.opacity=smooth((pReveal-0.03-p)/0.20).toFixed(3);
     content.style.transform='translateY('+(p*-55)+'px)';
-
-    // STAGE 2 — smooth eased fade to SOLID black over p 0.54→0.70, starting the
-    // instant the animation ends so the held frame dissolves cleanly into black
-    const fadeOp=smooth((p-0.54)/0.16);
-    fade.style.opacity=fadeOp.toFixed(3);
-
-    // STAGE 3 — once the black is solid, the stats ease up cleanly on pure black
-    // (p 0.71→0.82) and stay full to the end — never on a half-faded frame
-    const statsOp=smooth((p-0.71)/0.11);
+    // at frame 250 (pReveal) the black curtain AND the stats both START appearing;
+    // the curtain darkens a touch faster so the numbers read on near-solid black
+    fade.style.opacity=smooth((p-pReveal)/0.16).toFixed(3);
+    const statsOp=smooth((p-pReveal)/0.22);
     stats.style.opacity=statsOp.toFixed(3);
     statsGrid.style.transform='translateY('+((1-statsOp)*20).toFixed(1)+'px)';
-
-    // kick off the count-up once, as the stats begin easing in on solid black
-    if(!countsDone && p>=0.71){ countsDone=true; animateCounts(); }
+    // count-up begins exactly when the stats begin appearing (frame 250)
+    if(!countsDone && p>=pReveal){ countsDone=true; animateCounts(); }
   }
 
   window.addEventListener('scroll',render,{passive:true});
   window.addEventListener('resize',()=>{ resize(); render(); });
   if(window.ResizeObserver){ new ResizeObserver(resize).observe(canvas); }
-  (function ensureFirstPaint(){
-    resize();
-    if(currentIdx<0) requestAnimationFrame(ensureFirstPaint);
-  })();
+  (function ensureFirstPaint(){ resize(); if(currentIdx<0) requestAnimationFrame(ensureFirstPaint); })();
   render();
 })();
 
