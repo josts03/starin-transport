@@ -80,7 +80,7 @@ header:not(.scrolled) .burger span{background:#fff}
 
 /* ---------- HERO (scroll-driven video) ---------- */
 /* animation is contained in the hero — sticky pin scrubs frames as you scroll */
-.hero{position:relative;height:150vh;background:var(--black)}
+.hero{position:relative;height:180vh;background:var(--black)}
 .hero-stage{
   position:sticky;top:0;height:100vh;overflow:hidden;
   display:flex;align-items:center;justify-content:center;
@@ -93,6 +93,12 @@ header:not(.scrolled) .burger span{background:#fff}
 /* fade-to-black overlay — JS ramps it up at the end so the awkward last frames
    are never seen and the hero blends seamlessly into the dark next section */
 .hero-fade{position:absolute;inset:0;z-index:3;background:var(--black);opacity:0;pointer-events:none}
+/* stats revealed ON the black curtain so there's never an empty/black screen */
+.hero-stats{position:absolute;inset:0;z-index:6;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;padding:0 24px}
+.hero-stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:30px 24px;text-align:center;max-width:var(--maxw);width:100%;will-change:opacity,transform}
+.hstat .num{font-family:'Saira Condensed';font-size:clamp(40px,5vw,64px);font-weight:800;color:#fff;line-height:1}
+.hstat .num .cnt{color:var(--red)}
+.hstat .lbl{font-size:14px;letter-spacing:1px;text-transform:uppercase;color:var(--grey-light);margin-top:10px}
 .hero-content{position:relative;z-index:5;text-align:center;color:#fff;padding:0 24px;max-width:1000px;will-change:opacity,transform}
 .hero-content .eyebrow{color:#fff;opacity:.85}
 .hero-content h1{
@@ -308,6 +314,7 @@ footer{background:#050505;color:var(--grey-light);padding:50px 0 30px;border-top
   .gs-grid{gap:40px 20px}
   .flip-grid{grid-template-columns:repeat(2,1fr)}
   .stats .grid{grid-template-columns:repeat(2,1fr);gap:34px}
+  .hero-stats-grid{grid-template-columns:repeat(2,1fr);gap:38px 20px}
   .contact-grid{grid-template-columns:1fr;gap:34px}
   .team{grid-template-columns:repeat(2,1fr)}
   .fleet-grid{grid-template-columns:repeat(2,1fr)}
@@ -320,7 +327,7 @@ footer{background:#050505;color:var(--grey-light);padding:50px 0 30px;border-top
   .team{grid-template-columns:1fr}
   .cform .frow{grid-template-columns:1fr}
   .fleet-grid{grid-template-columns:1fr}
-  .hero{height:180vh}
+  .hero{height:200vh}
 }
 [hidden]{display:none!important}
 </style>
@@ -367,17 +374,14 @@ footer{background:#050505;color:var(--grey-light);padding:50px 0 30px;border-top
     </div>
     <!-- fade-to-black at the end of the animation (JS-controlled) -->
     <div class="hero-fade" id="heroFade"></div>
-  </div>
-</section>
-
-<!-- ================= STATS ================= -->
-<section class="stats">
-  <div class="wrap">
-    <div class="grid">
-      <div class="stat reveal"><div class="num"><span>40</span>+</div><div class="lbl" data-sl="Let izkušenj" data-en="Years of experience">Let izkušenj</div></div>
-      <div class="stat reveal"><div class="num"><span>30</span>+</div><div class="lbl" data-sl="Vozil v voznem parku" data-en="Vehicles in fleet">Vozil v voznem parku</div></div>
-      <div class="stat reveal"><div class="num"><span>4.000</span></div><div class="lbl" data-sl="m² skladišča" data-en="m² of warehousing">m² skladišča</div></div>
-      <div class="stat reveal"><div class="num"><span>100</span>%</div><div class="lbl" data-sl="EURO 6 vozni park" data-en="EURO 6 fleet">EURO 6 vozni park</div></div>
+    <!-- stats counted up ON the black curtain so the screen is never empty -->
+    <div class="hero-stats" id="heroStats">
+      <div class="hero-stats-grid">
+        <div class="hstat"><div class="num"><span class="cnt" data-target="40">40</span>+</div><div class="lbl" data-sl="Let izkušenj" data-en="Years of experience">Let izkušenj</div></div>
+        <div class="hstat"><div class="num"><span class="cnt" data-target="30">30</span>+</div><div class="lbl" data-sl="Vozil v voznem parku" data-en="Vehicles in fleet">Vozil v voznem parku</div></div>
+        <div class="hstat"><div class="num"><span class="cnt" data-target="4000" data-thousand="1">4.000</span></div><div class="lbl" data-sl="m² skladišča" data-en="m² of warehousing">m² skladišča</div></div>
+        <div class="hstat"><div class="num"><span class="cnt" data-target="100">100</span>%</div><div class="lbl" data-sl="EURO 6 vozni park" data-en="EURO 6 fleet">EURO 6 vozni park</div></div>
+      </div>
     </div>
   </div>
 </section>
@@ -830,10 +834,36 @@ footer{background:#050505;color:var(--grey-light);padding:50px 0 30px;border-top
   const hero=document.getElementById('hero');
   const content=document.getElementById('heroContent');
   const fade=document.getElementById('heroFade');
+  const stats=document.getElementById('heroStats');
+  const statsGrid=stats.querySelector('.hero-stats-grid');
   const canvas=document.getElementById('heroCanvas');
   const ctx=canvas.getContext('2d',{alpha:false});
 
-  // the animation plays once across the hero's sticky pin zone (150vh hero → 50vh of scrub)
+  // count-up animation for the hero stats — runs once when the curtain reveals them.
+  // Real values live in the HTML (SEO / no-JS); JS resets them to 0 and counts up.
+  const reduceMotion=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let countsDone=false;
+  function fmtNum(n,thou){ n=Math.round(n); return thou?(''+n).replace(/\B(?=(\d{3})+(?!\d))/g,'.'):''+n; }
+  if(!reduceMotion){ document.querySelectorAll('#heroStats .cnt').forEach(el=>{ el.textContent='0'; }); }
+  function animateCounts(){
+    const els=document.querySelectorAll('#heroStats .cnt');
+    els.forEach((el,i)=>{
+      const target=+el.dataset.target, thou=el.dataset.thousand==='1';
+      if(reduceMotion){ el.textContent=fmtNum(target,thou); return; }
+      const dur=1400, delay=i*120; let start=null;       // slight stagger per number
+      function step(ts){
+        if(start===null) start=ts;
+        const t=Math.min(1,Math.max(0,(ts-start-delay)/dur)), eased=1-Math.pow(1-t,3);
+        el.textContent=fmtNum(target*eased,thou);
+        if(t<1) requestAnimationFrame(step); else el.textContent=fmtNum(target,thou);
+      }
+      requestAnimationFrame(step);
+    });
+    // safety net — if rAF is throttled (e.g. inactive tab), still land on final values
+    if(!reduceMotion) setTimeout(()=>{ els.forEach(el=>{ el.textContent=fmtNum(+el.dataset.target,el.dataset.thousand==='1'); }); },2200);
+  }
+
+  // the animation plays once across the hero's sticky pin zone (180vh hero → 80vh of scrub)
   const pad=n=>('00'+n).slice(-3);
   const frames=new Array(FRAME_COUNT);
   const loaded=new Array(FRAME_COUNT).fill(false);
@@ -892,18 +922,27 @@ footer{background:#050505;color:var(--grey-light);padding:50px 0 30px;border-top
     const p=total>0?clamp01(-rect.top/total):0;
     latestP=p;
 
-    // frames 1→300 play at a constant rate over the whole pin
-    draw(indexForProgress(p));
+    // truck animation (frames 1→300) plays over the first ~72% of the pin,
+    // so the full sequence is seen before the black curtain covers it
+    draw(indexForProgress(clamp01(p/0.72)));
 
     // hero text: fully visible at start, fades out over p 0.10–0.45
     const textOp=clamp01((0.45-p)/0.35);
     content.style.opacity=textOp.toFixed(3);
     content.style.transform='translateY('+(p*-60)+'px)';
 
-    // fade-to-black over the last stretch (p 0.86→1.0) so the awkward end frames
-    // are never seen and the hero blends seamlessly into the dark next section
-    const fadeOp=clamp01((p-0.86)/0.14);
+    // fade-to-black over p 0.62→0.76 — the awkward end frames are never seen
+    const fadeOp=clamp01((p-0.62)/0.14);
     fade.style.opacity=fadeOp.toFixed(3);
+
+    // stats fade in ON the curtain (p 0.66→0.78) and stay full to the end —
+    // so the dark stretch shows the numbers instead of an empty screen
+    const statsOp=clamp01((p-0.66)/0.12);
+    stats.style.opacity=statsOp.toFixed(3);
+    statsGrid.style.transform='translateY('+((1-statsOp)*22).toFixed(1)+'px)';
+
+    // kick off the count-up once, as the stats start appearing
+    if(!countsDone && p>=0.66){ countsDone=true; animateCounts(); }
   }
 
   window.addEventListener('scroll',render,{passive:true});
